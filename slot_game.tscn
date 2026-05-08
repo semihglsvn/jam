@@ -1,0 +1,99 @@
+[gd_scene format=3 uid="uid://bk5laovitl6j4"]
+
+[ext_resource type="Script" uid="uid://0lj5r27dspxj" path="res://SlotGame.cs" id="1_6y2k4"]
+[ext_resource type="Texture2D" uid="uid://bx6hns3p2xtsl" path="res://Slot Machine/slot-machine2.png" id="2_p1dqe"]
+[ext_resource type="Texture2D" uid="uid://dm03o8tt2yjiw" path="res://Slot Machine/slot-symbol1.png" id="2_pccns"]
+[ext_resource type="Texture2D" uid="uid://bkwn5ap7n2ypd" path="res://Slot Machine/slot-symbol2.png" id="3_4efol"]
+[ext_resource type="Texture2D" uid="uid://doa1wsa84mh2v" path="res://Slot Machine/slot-machine3.png" id="3_ofl6k"]
+[ext_resource type="Texture2D" uid="uid://duvrjet67yym3" path="res://Slot Machine/slot-machine4.png" id="4_4fvkh"]
+[ext_resource type="Texture2D" uid="uid://mwdtwwopvop3" path="res://Slot Machine/slot-symbol4.png" id="4_32t3t"]
+[ext_resource type="Texture2D" uid="uid://6vfba72it2pi" path="res://Slot Machine/slot-machine5.png" id="5_af41c"]
+[ext_resource type="Texture2D" uid="uid://cdsmxgobpue0a" path="res://Slot Machine/slot-symbol3.png" id="5_llnrq"]
+
+[sub_resource type="Gradient" id="Gradient_pccns"]
+colors = PackedColorArray(0.2901961, 0.05490196, 0.09019608, 1, 0, 0.05490196, 0.09019608, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_4efol"]
+gradient = SubResource("Gradient_pccns")
+fill = 1
+fill_from = Vector2(0.5215517, 0.5258621)
+fill_to = Vector2(0, 0)
+
+[node name="SlotGame" type="Control" unique_id=1091437973 node_paths=PackedStringArray("ReelGrid", "WinLabel", "LeverButton")]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_6y2k4")
+Symbols = Array[Texture2D]([ExtResource("2_pccns"), ExtResource("3_4efol"), ExtResource("4_32t3t"), ExtResource("5_llnrq")])
+ReelGrid = NodePath("ReelGrid")
+WinLabel = NodePath("WinLabel")
+LeverButton = NodePath("Lever")
+
+[node name="Background" type="TextureRect" parent="." unique_id=573603547]
+layout_mode = 0
+offset_left = 1.0
+offset_right = 1149.0
+offset_bottom = 653.0
+texture = SubResource("GradientTexture2D_4efol")
+
+[node name="MachineBody" type="TextureRect" parent="." unique_id=1504933754]
+layout_mode = 0
+offset_left = 143.0
+offset_top = 29.0
+offset_right = 959.0
+offset_bottom = 653.0
+texture = ExtResource("4_4fvkh")
+
+[node name="ReelWindows" type="TextureRect" parent="." unique_id=1553750473]
+layout_mode = 0
+offset_left = 143.0
+offset_top = 29.0
+offset_right = 959.0
+offset_bottom = 653.0
+texture = ExtResource("5_af41c")
+
+[node name="ReelGrid" type="GridContainer" parent="." unique_id=1184743875]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 7.353
+anchor_top = 7.3770003
+anchor_right = 14.228001
+anchor_bottom = 9.7960005
+offset_left = 80.880005
+offset_top = -21.080017
+offset_right = 174.88
+offset_bottom = 97.15997
+theme_override_constants/h_separation = 15
+theme_override_constants/v_separation = 10
+columns = 3
+
+[node name="WinLabel" type="Label" parent="." unique_id=161794706]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.12900001
+anchor_top = -1.9280001
+anchor_right = 4.75
+offset_left = 327.84
+offset_top = 174.12
+offset_right = 605.0
+offset_bottom = 187.0
+
+[node name="Lever" type="TextureButton" parent="." unique_id=810540859]
+layout_mode = 0
+offset_left = 143.0
+offset_top = 29.0
+offset_right = 959.0
+offset_bottom = 653.0
+texture_normal = ExtResource("2_p1dqe")
+texture_pressed = ExtResource("3_ofl6k")
+
+[node name="SpinSound" type="AudioStreamPlayer2D" parent="." unique_id=808868799]
+position = Vector2(0, 1)
+
+[node name="StopSound" type="AudioStreamPlayer2D" parent="." unique_id=737977125]
+position = Vector2(0, 1)
+
+[node name="WinSound" type="AudioStreamPlayer2D" parent="." unique_id=1434613872]
+
+[connection signal="pressed" from="Lever" to="." method="OnLeverPulled"]

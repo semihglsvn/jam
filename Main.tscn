@@ -1,7 +1,10 @@
 [gd_scene format=3 uid="uid://7apkl28ctpfw"]
 
+[ext_resource type="Script" uid="uid://cr3lauftupj77" path="res://GameManager.cs" id="1_glv2v"]
+[ext_resource type="PackedScene" uid="uid://ddu0xk4awg8tx" path="res://blackjack.tscn" id="2_r0du0"]
+[ext_resource type="PackedScene" uid="uid://bk5laovitl6j4" path="res://slot_game.tscn" id="2_uu6xs"]
+
 [node name="Main" type="Node2D" unique_id=892963943]
-
-[node name="GameA" type="Node2D" parent="." unique_id=1618295785]
-
-[node name="GameB" type="Node2D" parent="." unique_id=870985022]
+position = Vector2(0, -2)
+script = ExtResource("1_glv2v")
+Games = Array[PackedScene]([ExtResource("2_r0du0"), ExtResource("2_uu6xs")])
