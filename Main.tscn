@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://7apkl28ctpfw"]
+
+[node name="Main" type="Node2D" unique_id=892963943]
+
+[node name="GameA" type="Node2D" parent="." unique_id=1618295785]
+
+[node name="GameB" type="Node2D" parent="." unique_id=870985022]
