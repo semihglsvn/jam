@@ -1,6 +1,11 @@
 [gd_scene format=3 uid="uid://ddu0xk4awg8tx"]
 
 [ext_resource type="Script" uid="uid://bafjf6hra5f63" path="res://Blackjack.cs" id="1_5smsy"]
+[ext_resource type="FontFile" uid="uid://bmnfihoijqam7" path="res://Fonts/monogram-extended.ttf" id="1_42u37"]
+
+[sub_resource type="Theme" id="Theme_7h45n"]
+default_font = ExtResource("1_42u37")
+default_font_size = 32
 
 [sub_resource type="Gradient" id="Gradient_epipi"]
 colors = PackedColorArray(0, 0.29411766, 0.13725491, 1, 0, 0, 0, 1)
@@ -10,91 +15,160 @@ gradient = SubResource("Gradient_epipi")
 fill = 1
 fill_from = Vector2(0.48706895, 0.47413793)
 
-[node name="BlackjackGame" type="Control" unique_id=1539045445 node_paths=PackedStringArray("DealerHandUI", "Hand1UI", "Hand2UI", "Hand2Area", "DealerScoreLabel", "Hand1ScoreLabel", "Hand2ScoreLabel", "ResultLabel", "HitBtn", "StandBtn", "DoubleBtn", "SplitBtn")]
+[node name="BlackjackGame" type="Control" unique_id=1539045445 node_paths=PackedStringArray("DealerHandUI", "Hand1UI", "Hand2UI", "Hand2Area", "DealerScoreLabel", "Hand1ScoreLabel", "Hand2ScoreLabel", "ResultLabel", "WalletLabel", "HitBtn", "StandBtn", "DoubleBtn", "SplitBtn")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = SubResource("Theme_7h45n")
 script = ExtResource("1_5smsy")
-DealerHandUI = NodePath("DealerHand")
-Hand1UI = NodePath("SplitManager/Hand1Area/HBoxContainer")
-Hand2UI = NodePath("SplitManager/Hand2Area/HBoxContainer")
-Hand2Area = NodePath("SplitManager/Hand2Area")
-DealerScoreLabel = NodePath("DealerScoreLabel")
-Hand1ScoreLabel = NodePath("SplitManager/Hand1Area/Label")
-Hand2ScoreLabel = NodePath("SplitManager/Hand2Area/Label")
-ResultLabel = NodePath("ResultLabel")
-HitBtn = NodePath("ButtonRow/HitButton")
-StandBtn = NodePath("ButtonRow/StandButton")
-DoubleBtn = NodePath("ButtonRow/DoubleButton")
-SplitBtn = NodePath("ButtonRow/SplitButton")
+DealerHandUI = NodePath("CanvasLayer/ThemeRoot/DealerHand")
+Hand1UI = NodePath("CanvasLayer/ThemeRoot/SplitManager/Hand1Area/HBoxContainer")
+Hand2UI = NodePath("CanvasLayer/ThemeRoot/SplitManager/Hand2Area/HBoxContainer")
+Hand2Area = NodePath("CanvasLayer/ThemeRoot/SplitManager/Hand2Area")
+DealerScoreLabel = NodePath("CanvasLayer/ThemeRoot/DealerScoreLabel")
+Hand1ScoreLabel = NodePath("CanvasLayer/ThemeRoot/SplitManager/Hand1Area/Label")
+Hand2ScoreLabel = NodePath("CanvasLayer/ThemeRoot/SplitManager/Hand2Area/Label")
+ResultLabel = NodePath("CanvasLayer/ThemeRoot/ResultLabel")
+WalletLabel = NodePath("CanvasLayer/ThemeRoot/WalletLabel")
+HitBtn = NodePath("CanvasLayer/ThemeRoot/ButtonRow/HitButton")
+StandBtn = NodePath("CanvasLayer/ThemeRoot/ButtonRow/StandButton")
+DoubleBtn = NodePath("CanvasLayer/ThemeRoot/ButtonRow/DoubleButton")
+SplitBtn = NodePath("CanvasLayer/ThemeRoot/ButtonRow/SplitButton")
 
-[node name="TextureRect" type="TextureRect" parent="." unique_id=643700394]
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1885302533]
+
+[node name="ThemeRoot" type="Control" parent="CanvasLayer" unique_id=2063846747]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_7h45n")
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer/ThemeRoot" unique_id=643700394]
 layout_mode = 0
 offset_right = 1153.0
 offset_bottom = 655.0
 texture = SubResource("GradientTexture2D_5smsy")
 
-[node name="DealerHand" type="HBoxContainer" parent="." unique_id=1071013509]
-layout_mode = 0
-offset_left = 274.0
-offset_top = 100.0
-offset_right = 314.0
-offset_bottom = 140.0
-
-[node name="DealerScoreLabel" type="Label" parent="." unique_id=205160892]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 23.0
-
-[node name="ResultLabel" type="Label" parent="." unique_id=254361110]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 23.0
-
-[node name="PlayerScoreLabel" type="Label" parent="." unique_id=1060180427]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 23.0
-
-[node name="ButtonRow" type="HBoxContainer" parent="." unique_id=1612270492]
-layout_mode = 0
-offset_right = 40.0
+[node name="DealerHand" type="HBoxContainer" parent="CanvasLayer/ThemeRoot" unique_id=1071013509]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_right = 20.0
 offset_bottom = 40.0
+grow_horizontal = 2
 
-[node name="HitButton" type="Button" parent="ButtonRow" unique_id=105331179]
+[node name="DealerScoreLabel" type="Label" parent="CanvasLayer/ThemeRoot" unique_id=205160892]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -17.0
+offset_top = 105.0
+offset_right = 23.0
+offset_bottom = 139.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 24
+
+[node name="ResultLabel" type="Label" parent="CanvasLayer/ThemeRoot" unique_id=254361110]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -11.5
+offset_right = 20.0
+offset_bottom = 14.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PlayerScoreLabel" type="Label" parent="CanvasLayer/ThemeRoot" unique_id=1060180427]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_top = -23.0
+offset_right = 20.0
+offset_bottom = 3.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="ButtonRow" type="HBoxContainer" parent="CanvasLayer/ThemeRoot" unique_id=1612270492]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = 169.0
+offset_top = -117.0
+offset_right = 501.0
+offset_bottom = -77.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="HitButton" type="Button" parent="CanvasLayer/ThemeRoot/ButtonRow" unique_id=105331179]
+layout_mode = 2
+text = "Hit"
+
+[node name="StandButton" type="Button" parent="CanvasLayer/ThemeRoot/ButtonRow" unique_id=1991835247]
+layout_mode = 2
+text = "Stand"
+
+[node name="DoubleButton" type="Button" parent="CanvasLayer/ThemeRoot/ButtonRow" unique_id=314382763]
+layout_mode = 2
+text = "Double Down"
+
+[node name="SplitButton" type="Button" parent="CanvasLayer/ThemeRoot/ButtonRow" unique_id=968955324]
+layout_mode = 2
+text = "Split"
+
+[node name="SplitManager" type="HBoxContainer" parent="CanvasLayer/ThemeRoot" unique_id=125829178]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_top = -151.0
+offset_right = 20.0
+offset_bottom = -111.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="Hand1Area" type="VBoxContainer" parent="CanvasLayer/ThemeRoot/SplitManager" unique_id=1680300301]
 layout_mode = 2
 
-[node name="StandButton" type="Button" parent="ButtonRow" unique_id=1991835247]
+[node name="Label" type="Label" parent="CanvasLayer/ThemeRoot/SplitManager/Hand1Area" unique_id=2100060590]
 layout_mode = 2
 
-[node name="DoubleButton" type="Button" parent="ButtonRow" unique_id=314382763]
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/ThemeRoot/SplitManager/Hand1Area" unique_id=1164991293]
 layout_mode = 2
 
-[node name="SplitButton" type="Button" parent="ButtonRow" unique_id=968955324]
+[node name="Hand2Area" type="VBoxContainer" parent="CanvasLayer/ThemeRoot/SplitManager" unique_id=707731845]
 layout_mode = 2
 
-[node name="SplitManager" type="HBoxContainer" parent="." unique_id=125829178]
+[node name="Label" type="Label" parent="CanvasLayer/ThemeRoot/SplitManager/Hand2Area" unique_id=422782026]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/ThemeRoot/SplitManager/Hand2Area" unique_id=803937471]
+layout_mode = 2
+
+[node name="WalletLabel" type="Label" parent="CanvasLayer/ThemeRoot" unique_id=1964170861]
 layout_mode = 0
 offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="Hand1Area" type="VBoxContainer" parent="SplitManager" unique_id=60670495]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="SplitManager/Hand1Area" unique_id=2100060590]
-layout_mode = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="SplitManager/Hand1Area" unique_id=1164991293]
-layout_mode = 2
-
-[node name="Hand2Area" type="VBoxContainer" parent="SplitManager" unique_id=707731845]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="SplitManager/Hand2Area" unique_id=422782026]
-layout_mode = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="SplitManager/Hand2Area" unique_id=803937471]
-layout_mode = 2
+offset_bottom = 45.0
+theme_override_font_sizes/font_size = 32
