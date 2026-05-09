@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://c8ndj5bxe7qfr"]
+
+[ext_resource type="Script" uid="uid://crjrotietrq15" path="res://Oyuncu.cs" id="1_2aa81"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_2aa81"]
+
+[node name="oyuncu" type="CharacterBody3D" unique_id=749844301 node_paths=PackedStringArray("SayacLabel")]
+script = ExtResource("1_2aa81")
+SayacLabel = NodePath("CanvasLayer/Label")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1978512299]
+shape = SubResource("CapsuleShape3D_2aa81")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=327724309]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.19764721, 0.38292402, 0.0945161)
+current = true
+fov = 80.68531
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=354947639]
+
+[node name="Label" type="Label" parent="CanvasLayer" unique_id=508777396]
+offset_right = 40.0
+offset_bottom = 23.0
+theme_override_colors/font_color = Color(2.887845e-06, 0.95529884, 0.77595586, 1)
+text = "Skor:0"
