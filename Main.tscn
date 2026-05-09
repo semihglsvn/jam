@@ -20,10 +20,12 @@ shader_parameter/intensity = 0.005
 shader_parameter/speed = 15.0
 shader_parameter/frequency = 0.05
 
-[node name="Main" type="Node2D" unique_id=892963943 node_paths=PackedStringArray("BlackjackScene", "SlotScene", "TransitionRect", "TextBackground", "TransitionLabel")]
+[node name="Main" type="Node2D" unique_id=892963943 node_paths=PackedStringArray("BlackjackScene", "SlotScene", "ArabaScene", "KoridorScene", "TransitionRect", "TextBackground", "TransitionLabel")]
 script = ExtResource("1_cm0pq")
 BlackjackScene = NodePath("BlackjackGame")
 SlotScene = NodePath("SlotGame")
+ArabaScene = NodePath("gamemanager")
+KoridorScene = NodePath("harita")
 TransitionRect = NodePath("TransitionLayer/ColorRect")
 TextBackground = NodePath("TransitionLayer/TextBackground")
 TransitionLabel = NodePath("TransitionLayer/CanvasGroup/Label")
