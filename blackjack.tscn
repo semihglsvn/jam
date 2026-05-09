@@ -188,3 +188,13 @@ offset_top = -173.0
 offset_right = 231.0
 offset_bottom = -133.0
 grow_vertical = 0
+
+[node name="CardSFX" type="AudioStreamPlayer2D" parent="." unique_id=1643966185]
+
+[node name="ChipSFX" type="AudioStreamPlayer2D" parent="." unique_id=2084003448]
+
+[node name="WinSFX" type="AudioStreamPlayer2D" parent="." unique_id=520543612]
+
+[node name="LoseSFX" type="AudioStreamPlayer2D" parent="." unique_id=1656440596]
+
+[node name="BustSFX" type="AudioStreamPlayer2D" parent="." unique_id=1857769967]

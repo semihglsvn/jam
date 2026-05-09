@@ -1,14 +1,14 @@
 [gd_scene format=3 uid="uid://c00063pl40qrq"]
 
-[ext_resource type="Script" path="res://RhythmManager.cs" id="3_3cf2b"]
+[ext_resource type="Script" uid="uid://dn0q6gmpsnpf4" path="res://RhythmManager.cs" id="3_3cf2b"]
 
 [node name="PlatformerGame" type="Node2D" unique_id=1219146549]
 
 [node name="RhythmManager" type="Node" parent="." unique_id=1316916246]
 script = ExtResource("3_3cf2b")
 
-[node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=1083920224]
+[node name="SafeLayer" type="TileMapLayer" parent="." unique_id=1083920224]
 
-[node name="TileMapLayer2" type="TileMapLayer" parent="." unique_id=807171340]
+[node name="BeatALayer" type="TileMapLayer" parent="." unique_id=807171340]
 
-[node name="TileMapLayer3" type="TileMapLayer" parent="." unique_id=2078564299]
+[node name="BeatBlayer" type="TileMapLayer" parent="." unique_id=2078564299]
