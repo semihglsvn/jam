@@ -2,10 +2,18 @@
 
 [ext_resource type="Script" uid="uid://bafjf6hra5f63" path="res://Blackjack.cs" id="1_5smsy"]
 [ext_resource type="FontFile" uid="uid://bmnfihoijqam7" path="res://Fonts/monogram-extended.ttf" id="1_42u37"]
+[ext_resource type="Shader" uid="uid://b4wyo0cv7m65k" path="res://Cards/CRTBackground.gdshader" id="3_7h45n"]
+[ext_resource type="Texture2D" uid="uid://b3fop82untibn" path="res://SBS - 2D Poker Pack/Top-Down/Chips/Template/chip.png" id="3_lt7f4"]
 
 [sub_resource type="Theme" id="Theme_7h45n"]
 default_font = ExtResource("1_42u37")
 default_font_size = 32
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_lt7f4"]
+shader = ExtResource("3_7h45n")
+shader_parameter/scanline_count = 100.0
+shader_parameter/scanline_opacity = 0.25
+shader_parameter/vignette_strength = 1.2
 
 [sub_resource type="Gradient" id="Gradient_epipi"]
 colors = PackedColorArray(0, 0.29411766, 0.13725491, 1, 0, 0, 0, 1)
@@ -15,7 +23,7 @@ gradient = SubResource("Gradient_epipi")
 fill = 1
 fill_from = Vector2(0.48706895, 0.47413793)
 
-[node name="BlackjackGame" type="Control" unique_id=1539045445 node_paths=PackedStringArray("DealerHandUI", "Hand1UI", "Hand2UI", "Hand2Area", "DealerScoreLabel", "Hand1ScoreLabel", "Hand2ScoreLabel", "ResultLabel", "WalletLabel", "HitBtn", "StandBtn", "DoubleBtn", "SplitBtn")]
+[node name="BlackjackGame" type="Control" unique_id=1539045445 node_paths=PackedStringArray("DealerHandUI", "Hand1UI", "Hand2UI", "Hand2Area", "DealerScoreLabel", "Hand1ScoreLabel", "Hand2ScoreLabel", "ResultLabel", "HitBtn", "StandBtn", "DoubleBtn", "SplitBtn", "ChipStackAnchor")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -32,11 +40,12 @@ DealerScoreLabel = NodePath("CanvasLayer/ThemeRoot/DealerScoreLabel")
 Hand1ScoreLabel = NodePath("CanvasLayer/ThemeRoot/SplitManager/Hand1Area/Label")
 Hand2ScoreLabel = NodePath("CanvasLayer/ThemeRoot/SplitManager/Hand2Area/Label")
 ResultLabel = NodePath("CanvasLayer/ThemeRoot/ResultLabel")
-WalletLabel = NodePath("CanvasLayer/ThemeRoot/WalletLabel")
 HitBtn = NodePath("CanvasLayer/ThemeRoot/ButtonRow/HitButton")
 StandBtn = NodePath("CanvasLayer/ThemeRoot/ButtonRow/StandButton")
 DoubleBtn = NodePath("CanvasLayer/ThemeRoot/ButtonRow/DoubleButton")
 SplitBtn = NodePath("CanvasLayer/ThemeRoot/ButtonRow/SplitButton")
+ChipStackAnchor = NodePath("CanvasLayer/ThemeRoot/ChipStackAnchor")
+ChipTexture = ExtResource("3_lt7f4")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1885302533]
 
@@ -50,6 +59,7 @@ grow_vertical = 2
 theme = SubResource("Theme_7h45n")
 
 [node name="TextureRect" type="TextureRect" parent="CanvasLayer/ThemeRoot" unique_id=643700394]
+material = SubResource("ShaderMaterial_lt7f4")
 layout_mode = 0
 offset_right = 1153.0
 offset_bottom = 655.0
@@ -60,9 +70,10 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -20.0
-offset_right = 20.0
-offset_bottom = 40.0
+offset_left = -19.0
+offset_top = 21.0
+offset_right = 21.0
+offset_bottom = 61.0
 grow_horizontal = 2
 
 [node name="DealerScoreLabel" type="Label" parent="CanvasLayer/ThemeRoot" unique_id=205160892]
@@ -70,10 +81,10 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -17.0
-offset_top = 105.0
-offset_right = 23.0
-offset_bottom = 139.0
+offset_left = -18.0
+offset_top = 153.0
+offset_right = 22.0
+offset_bottom = 187.0
 grow_horizontal = 2
 theme_override_font_sizes/font_size = 24
 
@@ -167,8 +178,13 @@ layout_mode = 2
 [node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/ThemeRoot/SplitManager/Hand2Area" unique_id=803937471]
 layout_mode = 2
 
-[node name="WalletLabel" type="Label" parent="CanvasLayer/ThemeRoot" unique_id=1964170861]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 45.0
-theme_override_font_sizes/font_size = 32
+[node name="ChipStackAnchor" type="Control" parent="CanvasLayer/ThemeRoot" unique_id=1295740206]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 191.0
+offset_top = -173.0
+offset_right = 231.0
+offset_bottom = -133.0
+grow_vertical = 0
