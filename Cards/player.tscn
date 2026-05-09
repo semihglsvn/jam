@@ -1,12 +1,9 @@
 [gd_scene format=3 uid="uid://ccnhharesqfqn"]
 
-[ext_resource type="Script" uid="uid://djv8ohqksol4q" path="res://Cards/Player.cs" id="1_a5r30"]
-
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_cqrms"]
 size = Vector2(32, 32)
 
 [node name="Player" type="CharacterBody2D" unique_id=1585974094]
-script = ExtResource("1_a5r30")
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=645464921]
 offset_left = 16.0
@@ -17,7 +14,3 @@ offset_bottom = 64.0
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1789550407]
 position = Vector2(32, 48)
 shape = SubResource("RectangleShape2D_cqrms")
-
-[node name="Camera2D" type="Camera2D" parent="." unique_id=159241747]
-position = Vector2(15, 49)
-position_smoothing_enabled = true

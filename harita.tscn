@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://42s157am6bll"]
+
+[ext_resource type="Script" uid="uid://bpe2tdi03t03y" path="res://KoridorOlusturucu.cs" id="1_1wsdy"]
+[ext_resource type="PackedScene" uid="uid://c8ndj5bxe7qfr" path="res://oyuncu.tscn" id="2_qjvq7"]
+
+[sub_resource type="Sky" id="Sky_1wsdy"]
+
+[sub_resource type="Environment" id="Environment_1wsdy"]
+background_mode = 1
+background_color = Color(0.9599888, 0.7447009, 0.60941315, 1)
+sky = SubResource("Sky_1wsdy")
+
+[node name="harita" type="Node3D" unique_id=520184946]
+script = ExtResource("1_1wsdy")
+
+[node name="oyuncu" parent="." unique_id=749844301 instance=ExtResource("2_qjvq7")]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1899010885]
+transform = Transform3D(1, 0, 0, 0, 0.49999997, 0.86602545, 0, -0.86602545, 0.49999997, 0, 0, 0)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=40556136]
+environment = SubResource("Environment_1wsdy")

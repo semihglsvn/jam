@@ -1,118 +1,161 @@
 using Godot;
 
-public partial class Main : Node
+public partial class Main : Node2D 
 {
-    [Export] public Control BlackjackScene; 
-    [Export] public Control SlotScene;
-    [Export] public ColorRect TransitionRect; 
-    [Export] public ColorRect TextBackground; 
-    [Export] public Label TransitionLabel;
+	[Export] public Node BlackjackScene; 
+	[Export] public Node SlotScene;
+	[Export] public Node ArabaScene;
+	[Export] public Node KoridorScene;
 
-    // --- NEW: Auto-Switch Variables ---
-    private RandomNumberGenerator _rng = new RandomNumberGenerator();
-    private Timer _autoSwitchTimer;
-    private bool _isTransitioning = false; 
+	[Export] public ColorRect TransitionRect; 
+	[Export] public ColorRect TextBackground; 
+	[Export] public Label TransitionLabel;
 
-    public override void _Ready()
-    {
-        BlackjackScene.Visible = true;
-        BlackjackScene.ProcessMode = ProcessModeEnum.Inherit;
-        
-        SlotScene.Visible = false;
-        SlotScene.ProcessMode = ProcessModeEnum.Disabled;
+	private RandomNumberGenerator _rng = new RandomNumberGenerator();
+	private Timer _autoSwitchTimer;
+	private bool _isTransitioning = false; 
 
-        TransitionRect.Material.Set("shader_parameter/progress", 0.0f);
-        TextBackground.Modulate = new Color(0, 0, 0, 0); 
-        TransitionLabel.Modulate = new Color(1, 1, 1, 0); 
+	private string[] _oyunListesi = { "Blackjack", "Slots", "Araba", "Koridor" };
+	private string _aktifOyun = "Blackjack";
 
-        // --- NEW: Setup the invisible timer ---
-        _rng.Randomize();
-        _autoSwitchTimer = new Timer();
-        _autoSwitchTimer.OneShot = true;
-        _autoSwitchTimer.Timeout += OnAutoSwitchTimeout;
-        AddChild(_autoSwitchTimer); // Add it to the game invisibly
+	public override void _Ready()
+	{
+		OyunDurumunuAyarla(BlackjackScene, true, true);
+		OyunDurumunuAyarla(SlotScene, false, false);
+		OyunDurumunuAyarla(ArabaScene, false, false);
+		OyunDurumunuAyarla(KoridorScene, false, false);
 
-        // Start the first countdown!
-        StartNextRandomTimer();
-    }
+		if (TransitionRect != null && TransitionRect.Material != null)
+			TransitionRect.Material.Set("shader_parameter/progress", 0.0f);
+		if (TextBackground != null) TextBackground.Modulate = new Color(0, 0, 0, 0); 
+		if (TransitionLabel != null) TransitionLabel.Modulate = new Color(1, 1, 1, 0); 
 
-    // --- NEW: The Timer Methods ---
-    private void StartNextRandomTimer()
-    {
-        float randomTime = _rng.RandfRange(15.0f, 45.0f);
-        _autoSwitchTimer.Start(randomTime);
-    }
+		_rng.Randomize();
+		_autoSwitchTimer = new Timer();
+		_autoSwitchTimer.OneShot = true;
+		_autoSwitchTimer.Timeout += OnAutoSwitchTimeout;
+		AddChild(_autoSwitchTimer); 
 
-    private void OnAutoSwitchTimeout()
-    {
-        // Don't auto-switch if the player just clicked the manual button
-        if (_isTransitioning) return;
+		StartNextRandomTimer();
+	}
 
-        // Figure out which game they are playing, and violently switch to the other one!
-        if (BlackjackScene.Visible)
-        {
-            SwitchGame("Slots", "SYSTEM OVERRIDE...\nFORCED SHIFT TO SLOTS.");
-        }
-        else
-        {
-            SwitchGame("Blackjack", "TIME IS UP...\nBACK TO THE TABLE.");
-        }
-    }
+	// YENİ: Görünürlük (Visible) ve Çalışma durumunu (ProcessMode) ayırdık!
+	private void OyunDurumunuAyarla(Node oyunDugumu, bool gorunurMu, bool calissinMi)
+	{
+		if (oyunDugumu == null) return;
+		
+		GorunurlukAyarlaRecursive(oyunDugumu, gorunurMu);
+		oyunDugumu.ProcessMode = calissinMi ? ProcessModeEnum.Inherit : ProcessModeEnum.Disabled;
+	}
 
-    public void SwitchGame(string targetGame, string message)
-    {
-        // Safety lock so transitions don't overlap
-        if (_isTransitioning) return;
-        _isTransitioning = true;
+	private void GorunurlukAyarlaRecursive(Node dugum, bool gorunurMu)
+	{
+		if (dugum is CanvasItem canvasItem) 
+		{
+			canvasItem.Visible = gorunurMu;
+		}
+		else if (dugum is Node3D node3d) 
+		{
+			node3d.Visible = gorunurMu;
+		}
+		else
+		{
+			foreach (Node cocuk in dugum.GetChildren())
+			{
+				GorunurlukAyarlaRecursive(cocuk, gorunurMu);
+			}
+		}
+	}
 
-        // Reset the timer! If they manually clicked the button, this gives them a fresh 15-45 seconds.
-        if (_autoSwitchTimer != null) StartNextRandomTimer();
+	private void StartNextRandomTimer()
+	{
+		float randomTime = _rng.RandfRange(15.0f, 35.0f);
+		_autoSwitchTimer.Start(randomTime);
+	}
 
-        TransitionLabel.Text = message;
-        
-        Tween tween = GetTree().CreateTween();
-        ShaderMaterial mat = TransitionRect.Material as ShaderMaterial;
+	private void OnAutoSwitchTimeout()
+	{
+		if (_isTransitioning) return;
 
-        // 1. GLITCH IN
-        tween.TweenProperty(mat, "shader_parameter/progress", 1.0f, 1.0f)
-             .SetTrans(Tween.TransitionType.Cubic).SetEase(Tween.EaseType.InOut);
+		string yeniOyun;
+		do {
+			yeniOyun = _oyunListesi[_rng.RandiRange(0, _oyunListesi.Length - 1)];
+		} while (yeniOyun == _aktifOyun);
 
-        // 2. READABILITY
-        tween.TweenProperty(TextBackground, "modulate:a", 0.95f, 0.4f);
-        tween.Parallel().TweenProperty(TransitionLabel, "modulate:a", 1.0f, 0.4f);
+		string mesaj = "";
+		if (yeniOyun == "Blackjack") mesaj = "MASAYA GERİ DÖN...";
+		else if (yeniOyun == "Slots") mesaj = "ŞANSINI DENE...";
+		else if (yeniOyun == "Araba") mesaj = "KAÇAMAZSIN... SÜR!";
+		else if (yeniOyun == "Koridor") mesaj = "YÜRÜ... SADECE YÜRÜ.";
 
-        // 3. THE PAUSE & SWAP
-        tween.TweenInterval(2.5f);
-        tween.TweenCallback(Callable.From(() =>
-        {
-            if (targetGame == "Slots")
-            {
-                BlackjackScene.Visible = false;
-                BlackjackScene.ProcessMode = ProcessModeEnum.Disabled;
-                SlotScene.Visible = true;
-                SlotScene.ProcessMode = ProcessModeEnum.Inherit;       
-            }
-            else if (targetGame == "Blackjack")
-            {
-                SlotScene.Visible = false;
-                SlotScene.ProcessMode = ProcessModeEnum.Disabled;
-                BlackjackScene.Visible = true;
-                BlackjackScene.ProcessMode = ProcessModeEnum.Inherit;
-            }
-        }));
+		SwitchGame(yeniOyun, mesaj);
+	}
 
-        // 4. FADE OUT TEXT
-        tween.TweenProperty(TextBackground, "modulate:a", 0.0f, 0.4f);
-        tween.Parallel().TweenProperty(TransitionLabel, "modulate:a", 0.0f, 0.4f);
+	public void SwitchGame(string targetGame, string message)
+	{
+		if (_isTransitioning) return;
+		_isTransitioning = true;
 
-        // 5. GLITCH OUT
-        tween.TweenProperty(mat, "shader_parameter/progress", 0.0f, 1.0f)
-             .SetTrans(Tween.TransitionType.Cubic).SetEase(Tween.EaseType.InOut);
+		if (_autoSwitchTimer != null) StartNextRandomTimer();
+		if (TransitionLabel != null) TransitionLabel.Text = message;
+		
+		Tween tween = GetTree().CreateTween();
+		ShaderMaterial mat = TransitionRect != null ? TransitionRect.Material as ShaderMaterial : null;
 
-        // 6. UNLOCK THE SAFETY
-        tween.TweenCallback(Callable.From(() =>
-        {
-            _isTransitioning = false;
-        }));
-    }
+		// --- SİHİRLİ DOKUNUŞ 1: Geçiş başladığı salise şu anki oyunu DONDUR ---
+		Node aktifDugum = GetOyunDugumu(_aktifOyun);
+		if (aktifDugum != null) aktifDugum.ProcessMode = ProcessModeEnum.Disabled;
+
+		if (mat != null)
+		{
+			tween.TweenProperty(mat, "shader_parameter/progress", 1.0f, 1.0f)
+				 .SetTrans(Tween.TransitionType.Cubic).SetEase(Tween.EaseType.InOut);
+		}
+
+		if (TextBackground != null) tween.Parallel().TweenProperty(TextBackground, "modulate:a", 0.95f, 0.4f);
+		if (TransitionLabel != null) tween.Parallel().TweenProperty(TransitionLabel, "modulate:a", 1.0f, 0.4f);
+
+		tween.TweenInterval(2.5f);
+		tween.TweenCallback(Callable.From(() =>
+		{
+			OyunDurumunuAyarla(BlackjackScene, false, false);
+			OyunDurumunuAyarla(SlotScene, false, false);
+			OyunDurumunuAyarla(ArabaScene, false, false);
+			OyunDurumunuAyarla(KoridorScene, false, false);
+
+			_aktifOyun = targetGame;
+
+			// --- SİHİRLİ DOKUNUŞ 2: Yeni oyunu GÖRÜNÜR yap ama BAŞLATMA (Hala donuk) ---
+			Node yeniDugum = GetOyunDugumu(targetGame);
+			if (yeniDugum != null) GorunurlukAyarlaRecursive(yeniDugum, true);
+		}));
+
+		if (TextBackground != null) tween.TweenProperty(TextBackground, "modulate:a", 0.0f, 0.4f);
+		if (TransitionLabel != null) tween.Parallel().TweenProperty(TransitionLabel, "modulate:a", 0.0f, 0.4f);
+
+		if (mat != null)
+		{
+			tween.TweenProperty(mat, "shader_parameter/progress", 0.0f, 1.0f)
+				 .SetTrans(Tween.TransitionType.Cubic).SetEase(Tween.EaseType.InOut);
+		}
+
+		// --- SİHİRLİ DOKUNUŞ 3: Glitch tamamen bitip ekran aydınlanınca zamanı AKIT ---
+		tween.TweenCallback(Callable.From(() => 
+		{ 
+			Node yeniDugum = GetOyunDugumu(targetGame);
+			if (yeniDugum != null) yeniDugum.ProcessMode = ProcessModeEnum.Inherit;
+			
+			_isTransitioning = false; 
+		}));
+	}
+
+	// İsimden düğümü bulan yardımcı kod
+	private Node GetOyunDugumu(string isim)
+	{
+		if (isim == "Blackjack") return BlackjackScene;
+		if (isim == "Slots") return SlotScene;
+		if (isim == "Araba") return ArabaScene;
+		if (isim == "Koridor") return KoridorScene;
+		return null;
+	}
 }
