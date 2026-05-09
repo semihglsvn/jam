@@ -1,0 +1,47 @@
+[gd_scene format=3 uid="uid://dixb4t2hvgqrd"]
+
+[ext_resource type="Script" uid="uid://dtxauvdaww5eo" path="res://YolKenariObjesi.cs" id="1_7ky6l"]
+[ext_resource type="Texture2D" uid="uid://crvfe2j5hxuou" path="res://sprites.png" id="2_l1x3g"]
+[ext_resource type="Texture2D" uid="uid://bk7jupv86alk1" path="res://sprites3.png" id="3_bw8cs"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bw8cs"]
+atlas = ExtResource("2_l1x3g")
+region = Rect2(1.6638451, 1253.2979, 236.32278, 226.7605)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_u6dcr"]
+atlas = ExtResource("2_l1x3g")
+region = Rect2(241.91307, 1241.0895, 224.64336, 247.18274)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_oyfnb"]
+atlas = ExtResource("2_l1x3g")
+region = Rect2(996.4955, -8.332016, 203.72986, 320.65308)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rwv0q"]
+atlas = ExtResource("2_l1x3g")
+region = Rect2(985.5293, 315.57855, 211.57056, 154.54565)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_m0tmc"]
+atlas = ExtResource("2_l1x3g")
+region = Rect2(601.0068, 864.8694, 320.77148, 196.98828)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_58x6i"]
+atlas = ExtResource("2_l1x3g")
+region = Rect2(-1.7996826, 534.10004, 149.60019, 357.50043)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6jg64"]
+atlas = ExtResource("2_l1x3g")
+region = Rect2(-2.3813477, -8.831537, 227.08224, 549.18475)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uua0m"]
+atlas = ExtResource("3_bw8cs")
+region = Rect2(791.0348, 640.03937, 347.7163, 178.20465)
+
+[node name="prop" type="Node2D" unique_id=1097308057]
+z_index = 200
+script = ExtResource("1_7ky6l")
+PropDokulari = Array[Texture2D]([SubResource("AtlasTexture_bw8cs"), SubResource("AtlasTexture_u6dcr"), SubResource("AtlasTexture_oyfnb"), SubResource("AtlasTexture_rwv0q"), SubResource("AtlasTexture_m0tmc"), SubResource("AtlasTexture_58x6i"), SubResource("AtlasTexture_6jg64"), SubResource("AtlasTexture_uua0m")])
+TemelHiz = 60.0
+UfuktaXAcikligi = 80.0
+AlttaXAcikligi = 1600.0
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=231635501]
