@@ -1,0 +1,120 @@
+[gd_scene format=3 uid="uid://dcgyns6x4uq3e"]
+
+[ext_resource type="Script" uid="uid://bwxtl65qg23d5" path="res://GameManager.cs" id="1_2iwnt"]
+[ext_resource type="PackedScene" uid="uid://dx220mymxeu5p" path="res://enemy.tscn" id="2_11ka4"]
+[ext_resource type="Script" uid="uid://tffwwtto3e6i" path="res://RoadScroller.cs" id="2_cikgk"]
+[ext_resource type="PackedScene" uid="uid://dixb4t2hvgqrd" path="res://prop.tscn" id="3_3f68o"]
+[ext_resource type="Script" uid="uid://j6ypc30ps3ey" path="res://PlayerCar.cs" id="3_4asi2"]
+[ext_resource type="Texture2D" uid="uid://crm6jjyw4fmtc" path="res://road_base.png" id="3_tw36h"]
+[ext_resource type="Texture2D" uid="uid://bun7t56vwp3ao" path="res://sprites22.png" id="6_tw36h"]
+[ext_resource type="Script" uid="uid://d3qr52d7ix3nu" path="res://LinesScroller.cs" id="7_3f68o"]
+[ext_resource type="Texture2D" uid="uid://7ok5tdqu2ajx" path="res://sky_night.png" id="7_tw36h"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ymq0e"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2iwnt"]
+size = Vector2(73, 51)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3f68o"]
+atlas = ExtResource("6_tw36h")
+region = Rect2(1065, 1314, 213, 219)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yahjx"]
+atlas = ExtResource("6_tw36h")
+region = Rect2(1278, 1314, 213, 219)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5s570"]
+atlas = ExtResource("6_tw36h")
+region = Rect2(860, 1314, 215, 219)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_5s570"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3f68o")
+}],
+"loop": true,
+"name": &"duz",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yahjx")
+}],
+"loop": true,
+"name": &"sag",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5s570")
+}],
+"loop": true,
+"name": &"sol",
+"speed": 8.0
+}]
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_tw36h"]
+
+[node name="gamemanager" type="Node" unique_id=1748412387 node_paths=PackedStringArray("SpawnTimerDugumu", "PropTimerDugumu")]
+script = ExtResource("1_2iwnt")
+EnemyScene = ExtResource("2_11ka4")
+PropScene = ExtResource("3_3f68o")
+SpawnTimerDugumu = NodePath("spawntimer")
+PropTimerDugumu = NodePath("proptimer")
+PropSpawnAraligi = 9.0
+
+[node name="road" type="Node2D" parent="." unique_id=142791631]
+script = ExtResource("2_cikgk")
+
+[node name="road1" type="Sprite2D" parent="road" unique_id=730216023]
+position = Vector2(576, 454)
+scale = Vector2(1, 1.0333148)
+texture = ExtResource("3_tw36h")
+
+[node name="player" type="CharacterBody2D" parent="." unique_id=2134011038 groups=["oyuncu"]]
+position = Vector2(3, 0)
+script = ExtResource("3_4asi2")
+SolSinir = 200.0
+SagSinir = 950.0
+AracYPos = 580.0
+AracScale = 1.5
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="player" unique_id=1513148127]
+position = Vector2(-3, 0)
+shape = SubResource("RectangleShape2D_ymq0e")
+
+[node name="hitarea" type="Area2D" parent="player" unique_id=660883516]
+position = Vector2(-4, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="player/hitarea" unique_id=604089507]
+position = Vector2(-13.5, 6.5)
+shape = SubResource("RectangleShape2D_2iwnt")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="player" unique_id=377185795]
+position = Vector2(-19.000004, 45.000004)
+scale = Vector2(0.6032864, 0.7214612)
+sprite_frames = SubResource("SpriteFrames_5s570")
+animation = &"duz"
+
+[node name="lines" type="Node2D" parent="." unique_id=1750695888]
+script = ExtResource("7_3f68o")
+CizgiDokusu = SubResource("CanvasTexture_tw36h")
+CizgiSayisi = 25
+TemelHiz = 5.0
+UfukY = 200.0
+ScaleCarpaniX = 15.0
+ScaleCarpaniY = 18.0
+
+[node name="sky" type="Sprite2D" parent="." unique_id=922162085]
+position = Vector2(576, 130)
+scale = Vector2(1, 1.0096389)
+texture = ExtResource("7_tw36h")
+
+[node name="spawntimer" type="Timer" parent="." unique_id=522859151]
+wait_time = 1.5
+autostart = true
+
+[node name="proptimer" type="Timer" parent="." unique_id=1837125248]
+wait_time = 0.8
+autostart = true

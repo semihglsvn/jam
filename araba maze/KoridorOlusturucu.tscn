@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://cowf7axkufrb5"]
+
+[ext_resource type="Script" uid="uid://bpe2tdi03t03y" path="res://KoridorOlusturucu.cs" id="1_171w7"]
+
+[node name="Node3D" type="Node3D" unique_id=1186602603]
+script = ExtResource("1_171w7")
