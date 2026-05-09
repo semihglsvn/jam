@@ -4,11 +4,19 @@
 [ext_resource type="PackedScene" uid="uid://ddu0xk4awg8tx" path="res://blackjack.tscn" id="2_r0du0"]
 [ext_resource type="PackedScene" uid="uid://bk5laovitl6j4" path="res://slot_game.tscn" id="2_uu6xs"]
 [ext_resource type="Shader" uid="uid://345f5lgpiae2" path="res://TransitionGlitch.gdshader" id="4_fos0i"]
+[ext_resource type="Shader" uid="uid://xe6qtpk4qlug" path="res://TransitionLabel.gdshader" id="5_3dxm6"]
+[ext_resource type="FontFile" uid="uid://bmnfihoijqam7" path="res://Fonts/monogram-extended.ttf" id="6_lgr22"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3dxm6"]
 shader = ExtResource("4_fos0i")
 shader_parameter/progress = 0.0
 shader_parameter/pixel_size = 16.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_trn2v"]
+shader = ExtResource("5_3dxm6")
+shader_parameter/intensity = 0.005
+shader_parameter/speed = 15.0
+shader_parameter/frequency = 0.05
 
 [node name="Main" type="Node2D" unique_id=892963943 node_paths=PackedStringArray("BlackjackScene", "SlotScene", "TransitionRect", "TextBackground", "TransitionLabel")]
 script = ExtResource("1_cm0pq")
@@ -16,7 +24,7 @@ BlackjackScene = NodePath("BlackjackGame")
 SlotScene = NodePath("SlotGame")
 TransitionRect = NodePath("TransitionLayer/ColorRect")
 TextBackground = NodePath("TransitionLayer/TextBackground")
-TransitionLabel = NodePath("TransitionLayer/Label")
+TransitionLabel = NodePath("TransitionLayer/CanvasGroup/Label")
 
 [node name="BlackjackGame" parent="." unique_id=1539045445 instance=ExtResource("2_r0du0")]
 
@@ -44,9 +52,19 @@ grow_vertical = 2
 mouse_filter = 2
 color = Color(0, 0, 0, 1)
 
-[node name="Label" type="Label" parent="TransitionLayer" unique_id=946862956]
+[node name="CanvasGroup" type="CanvasGroup" parent="TransitionLayer" unique_id=61960276]
+material = SubResource("ShaderMaterial_trn2v")
+
+[node name="Label" type="Label" parent="TransitionLayer/CanvasGroup" unique_id=946862956]
+texture_filter = 1
 offset_left = 538.0
 offset_top = 298.0
-offset_right = 630.0
-offset_bottom = 321.0
+offset_right = 670.0
+offset_bottom = 324.0
+theme_override_colors/font_shadow_color = Color(0.96862745, 0.58431375, 1, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/outline_size = 2
+theme_override_fonts/font = ExtResource("6_lgr22")
+theme_override_font_sizes/font_size = 32
 text = "placeholder"
