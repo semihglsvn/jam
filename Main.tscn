@@ -1,10 +1,52 @@
 [gd_scene format=3 uid="uid://7apkl28ctpfw"]
 
-[ext_resource type="Script" uid="uid://cr3lauftupj77" path="res://GameManager.cs" id="1_glv2v"]
+[ext_resource type="Script" uid="uid://0bkxp725ii43" path="res://Main.cs" id="1_cm0pq"]
 [ext_resource type="PackedScene" uid="uid://ddu0xk4awg8tx" path="res://blackjack.tscn" id="2_r0du0"]
 [ext_resource type="PackedScene" uid="uid://bk5laovitl6j4" path="res://slot_game.tscn" id="2_uu6xs"]
+[ext_resource type="Shader" uid="uid://345f5lgpiae2" path="res://TransitionGlitch.gdshader" id="4_fos0i"]
 
-[node name="Main" type="Node2D" unique_id=892963943]
-position = Vector2(0, -2)
-script = ExtResource("1_glv2v")
-Games = Array[PackedScene]([ExtResource("2_r0du0"), ExtResource("2_uu6xs")])
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_3dxm6"]
+shader = ExtResource("4_fos0i")
+shader_parameter/progress = 0.0
+shader_parameter/pixel_size = 16.0
+
+[node name="Main" type="Node2D" unique_id=892963943 node_paths=PackedStringArray("BlackjackScene", "SlotScene", "TransitionRect", "TextBackground", "TransitionLabel")]
+script = ExtResource("1_cm0pq")
+BlackjackScene = NodePath("BlackjackGame")
+SlotScene = NodePath("SlotGame")
+TransitionRect = NodePath("TransitionLayer/ColorRect")
+TextBackground = NodePath("TransitionLayer/TextBackground")
+TransitionLabel = NodePath("TransitionLayer/Label")
+
+[node name="BlackjackGame" parent="." unique_id=1539045445 instance=ExtResource("2_r0du0")]
+
+[node name="SlotGame" parent="." unique_id=1091437973 instance=ExtResource("2_uu6xs")]
+z_index = 1
+
+[node name="TransitionLayer" type="CanvasLayer" parent="." unique_id=1561616899]
+layer = 100
+
+[node name="ColorRect" type="ColorRect" parent="TransitionLayer" unique_id=567905985]
+material = SubResource("ShaderMaterial_3dxm6")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="TextBackground" type="ColorRect" parent="TransitionLayer" unique_id=2073253379]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Label" type="Label" parent="TransitionLayer" unique_id=946862956]
+offset_left = 538.0
+offset_top = 298.0
+offset_right = 630.0
+offset_bottom = 321.0
+text = "placeholder"

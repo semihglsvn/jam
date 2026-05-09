@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://mwdtwwopvop3" path="res://Slot Machine/slot-symbol4.png" id="4_32t3t"]
 [ext_resource type="Texture2D" uid="uid://6vfba72it2pi" path="res://Slot Machine/slot-machine5.png" id="5_af41c"]
 [ext_resource type="Texture2D" uid="uid://cdsmxgobpue0a" path="res://Slot Machine/slot-symbol3.png" id="5_llnrq"]
+[ext_resource type="Texture2D" uid="uid://wpu6c8uceo35" path="res://coin_spin-Sheet.png" id="10_4efol"]
 
 [sub_resource type="Gradient" id="Gradient_pccns"]
 colors = PackedColorArray(0.2901961, 0.05490196, 0.09019608, 1, 0, 0.05490196, 0.09019608, 1)
@@ -19,7 +20,22 @@ fill = 1
 fill_from = Vector2(0.5215517, 0.5258621)
 fill_to = Vector2(0, 0)
 
-[node name="SlotGame" type="Control" unique_id=1091437973 node_paths=PackedStringArray("ReelGrid", "WinLabel", "LeverButton")]
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_32t3t"]
+particles_animation = true
+particles_anim_h_frames = 6
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_pccns"]
+particle_flag_disable_z = true
+direction = Vector3(0, 1, 0)
+initial_velocity_min = 400.0
+initial_velocity_max = 600.0
+gravity = Vector3(0, 98, 0)
+anim_speed_min = 1.0
+anim_speed_max = 2.0
+
+[node name="SlotGame" type="Control" unique_id=1091437973 node_paths=PackedStringArray("ReelGrid", "WinLabel", "LeverButton", "MainCamera", "CoinParticles")]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
@@ -29,6 +45,8 @@ Symbols = Array[Texture2D]([ExtResource("2_pccns"), ExtResource("3_4efol"), ExtR
 ReelGrid = NodePath("ReelGrid")
 WinLabel = NodePath("WinLabel")
 LeverButton = NodePath("Lever")
+MainCamera = NodePath("Camera2D")
+CoinParticles = NodePath("CoinParticles")
 
 [node name="Background" type="TextureRect" parent="." unique_id=573603547]
 layout_mode = 0
@@ -44,6 +62,8 @@ offset_top = 29.0
 offset_right = 959.0
 offset_bottom = 653.0
 texture = ExtResource("4_4fvkh")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="ReelWindows" type="TextureRect" parent="." unique_id=1553750473]
 layout_mode = 0
@@ -95,5 +115,20 @@ position = Vector2(0, 1)
 position = Vector2(0, 1)
 
 [node name="WinSound" type="AudioStreamPlayer2D" parent="." unique_id=1434613872]
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1545338878]
+position = Vector2(-1, 0)
+anchor_mode = 0
+
+[node name="CoinParticles" type="GPUParticles2D" parent="." unique_id=439074983]
+material = SubResource("CanvasItemMaterial_32t3t")
+position = Vector2(555, 36)
+emitting = false
+amount = 1000
+texture = ExtResource("10_4efol")
+lifetime = 2.0
+one_shot = true
+explosiveness = 0.95
+process_material = SubResource("ParticleProcessMaterial_pccns")
 
 [connection signal="pressed" from="Lever" to="." method="OnLeverPulled"]

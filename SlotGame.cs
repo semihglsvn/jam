@@ -4,18 +4,29 @@ using System.Threading.Tasks;
 
 public partial class SlotGame : Control
 {
-    [Export] public Texture2D[] Symbols; // Drag your 4 symbols (7, Cherry, Bell, BAR) here
+    [Export] public Texture2D[] Symbols; 
     [Export] public GridContainer ReelGrid;
     [Export] public Label WinLabel;
     [Export] public TextureButton LeverButton;
+    [Export] public Button GoToBlackjackBtn; // <--- NEW: The return button!
     
     // Audio Hooks
     [Export] public AudioStreamPlayer SpinSFX;
     [Export] public AudioStreamPlayer StopSFX;
     [Export] public AudioStreamPlayer WinSFX;
 
+    // --- Juice Hooks ---
+    [ExportCategory("Juice")]
+    [Export] public Camera2D MainCamera;
+    [Export] public GpuParticles2D CoinParticles; 
+    
+    private float _shakeStrength = 0.0f;
+    private const float ShakeFade = 5.0f; 
+    private RandomNumberGenerator _rng = new RandomNumberGenerator();
+    // ------------------------
+
     private List<TextureRect> _gridSlots = new List<TextureRect>();
-    private const int GridSize = 9; // 3x3 grid
+    private const int GridSize = 9; 
     private bool _isExiting = false;
 
     public override void _Notification(int what)
@@ -23,8 +34,16 @@ public partial class SlotGame : Control
         if (what == NotificationPredelete) _isExiting = true;
     }
 
-	public override void _Ready()
+    public override void _Ready()
     {
+        _rng.Randomize();
+
+        // <--- NEW: Wire up the button click!
+        if (GoToBlackjackBtn != null)
+        {
+            GoToBlackjackBtn.Pressed += OnGoToBlackjackPressed;
+        }
+
         // Generate the 9 empty slots
         for (int i = 0; i < GridSize; i++)
         {
@@ -33,7 +52,6 @@ public partial class SlotGame : Control
             newSlot.StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered;
             newSlot.CustomMinimumSize = new Vector2(60, 60); 
             
-            // ADD THESE TWO LINES:
             newSlot.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
             newSlot.SizeFlagsVertical = Control.SizeFlags.ExpandFill;
             
@@ -41,17 +59,54 @@ public partial class SlotGame : Control
             _gridSlots.Add(newSlot);
         }
     }
+
+    // <--- NEW: The Transition Method
+    private void OnGoToBlackjackPressed()
+    {
+        // Use the absolute path to find Main
+        Main mainScene = GetNodeOrNull<Main>("/root/Main"); 
+        
+        if (mainScene != null)
+        {
+            mainScene.SwitchGame("Blackjack", "DON'T GIVE UP. DOUBLE DOWN.");
+        }
+        else
+        {
+            GD.PrintErr("CRITICAL: Could not find the Main node at /root/Main!");
+        }
+    }
+
+    // --- The Screen Shake Loop ---
+    public override void _Process(double delta)
+    {
+        if (_shakeStrength > 0.05f && MainCamera != null)
+        {
+            _shakeStrength = Mathf.Lerp(_shakeStrength, 0, ShakeFade * (float)delta);
+            
+            Vector2 randomOffset = new Vector2(
+                _rng.RandfRange(-_shakeStrength, _shakeStrength),
+                _rng.RandfRange(-_shakeStrength, _shakeStrength)
+            );
+            
+            MainCamera.Offset = randomOffset;
+        }
+        else if (MainCamera != null && MainCamera.Offset != Vector2.Zero)
+        {
+            MainCamera.Offset = Vector2.Zero;
+        }
+    }
+
     public async void OnLeverPulled()
     {
         if (_isExiting) return;
 
-        LeverButton.Disabled = true; // Lever stays down while spinning
+        LeverButton.Disabled = true; 
+        if (GoToBlackjackBtn != null) GoToBlackjackBtn.Disabled = true; // Don't let them leave while spinning!
         
         foreach (var slot in _gridSlots) slot.Modulate = Colors.White;
 
         if (SpinSFX != null) SpinSFX.Play();
 
-        // Fake Spin Visuals
         for (int i = 0; i < 12; i++)
         {
             RandomizeBoard();
@@ -62,11 +117,11 @@ public partial class SlotGame : Control
         if (SpinSFX != null) SpinSFX.Stop();
         if (StopSFX != null) StopSFX.Play();
 
-        // Final Roll
         Texture2D[] finalBoard = RandomizeBoard();
         EvaluatePaylines(finalBoard);
         
-        LeverButton.Disabled = false; // Lever pops back up
+        LeverButton.Disabled = false; 
+        if (GoToBlackjackBtn != null) GoToBlackjackBtn.Disabled = false;
     }
 
     private Texture2D[] RandomizeBoard()
@@ -74,7 +129,7 @@ public partial class SlotGame : Control
         Texture2D[] currentBoard = new Texture2D[GridSize];
         for (int i = 0; i < _gridSlots.Count; i++)
         {
-            Texture2D rolled = Symbols[GD.Randi() % Symbols.Length];
+            Texture2D rolled = Symbols[_rng.Randi() % Symbols.Length];
             _gridSlots[i].Texture = rolled;
             currentBoard[i] = rolled;
         }
@@ -85,13 +140,11 @@ public partial class SlotGame : Control
     {
         int totalWin = 0;
 
-        // Check the 3 horizontal rows (indexes: 0-1-2, 3-4-5, 6-7-8)
         for (int row = 0; row < 3; row++)
         {
             int startIndex = row * 3;
             if (board[startIndex] == board[startIndex + 1] && board[startIndex + 1] == board[startIndex + 2])
             {
-                // We have a 3-in-a-row!
                 totalWin += 50; 
                 HighlightWinningRow(startIndex);
             }
@@ -100,24 +153,31 @@ public partial class SlotGame : Control
         if (totalWin > 0)
         {
             if (WinSFX != null) WinSFX.Play();
-        }
-        else
-        {
+            TriggerJackpotVisuals(); 
         }
     }
 
+    private void TriggerJackpotVisuals()
+    {
+        _shakeStrength = 35.0f; 
+        
+        if (CoinParticles != null)
+        {
+            CoinParticles.Restart(); 
+        }
+    }
+    
     private void HighlightWinningRow(int startIndex)
     {
-        // Make the winning row pop, dim the rest
         for (int i = 0; i < _gridSlots.Count; i++)
         {
             if (i >= startIndex && i <= startIndex + 2)
             {
-                _gridSlots[i].Modulate = new Color(1.5f, 1.5f, 1.5f); // Brighten
+                _gridSlots[i].Modulate = new Color(1.5f, 1.5f, 1.5f); 
             }
             else if (_gridSlots[i].Modulate == Colors.White) 
             {
-                _gridSlots[i].Modulate = new Color(0.4f, 0.4f, 0.4f); // Dim only if not part of another win
+                _gridSlots[i].Modulate = new Color(0.4f, 0.4f, 0.4f); 
             }
         }
     }

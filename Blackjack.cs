@@ -4,14 +4,13 @@ using System.Collections.Generic;
 
 public partial class Blackjack : Control
 {
-    // --- Helper Class for the Real Cards ---
     public class PlayingCard
     {
         public int ScoreValue;
         public string ImageName; 
     }
 
-    // --- UI Hooks (Drag these in from the Inspector) ---
+    // --- UI Hooks ---
     [ExportCategory("Containers")]
     [Export] public HBoxContainer DealerHandUI;
     [Export] public HBoxContainer Hand1UI;
@@ -23,13 +22,18 @@ public partial class Blackjack : Control
     [Export] public Label Hand1ScoreLabel;
     [Export] public Label Hand2ScoreLabel;
     [Export] public Label ResultLabel;
-    [Export] public Label WalletLabel; 
 
     [ExportCategory("Buttons")]
     [Export] public Button HitBtn;
     [Export] public Button StandBtn;
     [Export] public Button DoubleBtn;
     [Export] public Button SplitBtn;
+    [Export] public Button GoToSlotsBtn; // <--- NEW: The transition button!
+
+    // --- NEW: Economy Visuals ---
+    [ExportCategory("Economy Visuals")]
+    [Export] public Control ChipStackAnchor; 
+    [Export] public Texture2D ChipTexture; 
 
     // --- Game State ---
     private List<PlayingCard> _deck = new List<PlayingCard>();
@@ -40,7 +44,7 @@ public partial class Blackjack : Control
     private RandomNumberGenerator _rng = new RandomNumberGenerator();
     private bool _isSplit = false;
     private int _activeHand = 1;
-    private bool _waitingForNextRound = false; // Spacebar state
+    private bool _waitingForNextRound = false; 
     
     private TextureRect _hiddenCardVisual;
     private bool _isDealerRevealed = false;
@@ -51,24 +55,49 @@ public partial class Blackjack : Control
     private int _hand1Bet = 0;
     private int _hand2Bet = 0;
 
-    public override void _Ready()
+	public override void _Ready()
     {
         HitBtn.Pressed += OnHitPressed;
         StandBtn.Pressed += OnStandPressed;
         DoubleBtn.Pressed += OnDoubleDownPressed;
         SplitBtn.Pressed += OnSplitPressed;
+        if (GoToSlotsBtn != null) GoToSlotsBtn.Pressed += OnGoToSlotsPressed;
+
+        // <--- NEW: Force the CanvasLayer to turn invisible when Main.cs tells the game to hide! --->
+        this.VisibilityChanged += () =>
+        {
+            CanvasLayer myCanvas = GetNodeOrNull<CanvasLayer>("CanvasLayer");
+            if (myCanvas != null) myCanvas.Visible = this.Visible;
+        };
+        // <---------------------------------------------------------------------------------------->
 
         _rng.Randomize();
+        UpdateVisualChips(); 
         StartNewRound();
     }
 
     public override void _Input(InputEvent @event)
     {
-        // Spacebar to deal next round
         if (_waitingForNextRound && @event is InputEventKey keyEvent && keyEvent.Pressed && keyEvent.Keycode == Key.Space)
         {
             _waitingForNextRound = false; 
             StartNewRound();
+        }
+    }
+
+    // <--- NEW: The Transition Method
+    private void OnGoToSlotsPressed()
+    {
+        // Use the absolute path to find Main
+        Main mainScene = GetNodeOrNull<Main>("/root/Main"); 
+        
+        if (mainScene != null)
+        {
+            mainScene.SwitchGame("Slots", "LADY LUCK IS WAITING...");
+        }
+        else
+        {
+            GD.PrintErr("CRITICAL: Could not find the Main node at /root/Main!");
         }
     }
 
@@ -77,21 +106,22 @@ public partial class Blackjack : Control
         if (_playerWallet < _currentBet)
         {
             ResultLabel.Text = "OUT OF COINS!\nGAME OVER";
-            if (WalletLabel != null) WalletLabel.Text = $"WALLET: ${_playerWallet}";
+            UpdateVisualChips();
             HitBtn.Disabled = true; StandBtn.Disabled = true; DoubleBtn.Disabled = true; SplitBtn.Disabled = true;
             return;
         }
 
-		_isSplit = false;
+        // Deduct bet instantly
+        _playerWallet -= _currentBet;
+        _hand1Bet = _currentBet;
+        _hand2Bet = 0;
+
+        _isSplit = false;
         _activeHand = 1;
         _isDealerRevealed = false; 
         
         Hand2Area.Visible = false;
         ResultLabel.Text = "";
-        
-// ... (Keep the top part of your StartNewRound exactly the same!) ...
-
-        // 1. Clear the old numbers instantly
         DealerScoreLabel.Text = "";
         Hand1ScoreLabel.Text = "";
         Hand2ScoreLabel.Text = "";
@@ -106,25 +136,77 @@ public partial class Blackjack : Control
 
         BuildDeck();
 
-        // 2. Deal the card, THEN instantly update the score, THEN wait!
         DealCard(_hand1, Hand1UI);
-        UpdateScoresUI(); // <--- ADD THIS
+        UpdateScoresUI();
         await ToSignal(GetTree().CreateTimer(0.2f), SceneTreeTimer.SignalName.Timeout);
         
         DealCard(_dealerHand, DealerHandUI); 
-        UpdateScoresUI(); // <--- ADD THIS
+        UpdateScoresUI();
         await ToSignal(GetTree().CreateTimer(0.2f), SceneTreeTimer.SignalName.Timeout);
         
         DealCard(_hand1, Hand1UI);
-        UpdateScoresUI(); // <--- ADD THIS
+        UpdateScoresUI();
         await ToSignal(GetTree().CreateTimer(0.2f), SceneTreeTimer.SignalName.Timeout);
         
         DealHiddenCard(); 
-        UpdateScoresUI(); // <--- ADD THIS
+        UpdateScoresUI();
 
-        // UpdateScoresUI() is no longer needed here since we updated as we dealt!
         CheckActionButtons();
     }
+
+    // --- Physical Chip Spawner ---
+    private void UpdateVisualChips()
+    {
+        if (ChipStackAnchor == null || ChipTexture == null) return;
+
+        int targetChips = _playerWallet / 100;
+        int currentChips = ChipStackAnchor.GetChildCount();
+
+        if (currentChips == targetChips) return; 
+
+        if (targetChips > currentChips)
+        {
+            int chipsToAdd = targetChips - currentChips;
+            for (int i = 0; i < chipsToAdd; i++)
+            {
+                int stackIndex = currentChips + i; 
+
+                TextureRect chip = new TextureRect
+                {
+                    Texture = ChipTexture,
+                    ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize,
+                    CustomMinimumSize = new Vector2(48, 48), 
+                    StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered,
+                    Position = new Vector2(0, -600) 
+                };
+
+                ChipStackAnchor.AddChild(chip);
+
+                float targetY = -(stackIndex * 6); 
+                
+                Tween tween = GetTree().CreateTween();
+                tween.TweenProperty(chip, "position", new Vector2(0, targetY), 0.4f)
+                     .SetDelay(i * 0.05f) 
+                     .SetTrans(Tween.TransitionType.Bounce)
+                     .SetEase(Tween.EaseType.Out);
+            }
+        }
+        else if (targetChips < currentChips)
+        {
+            int chipsToRemove = currentChips - targetChips;
+            for (int i = 0; i < chipsToRemove; i++)
+            {
+                int lastChildIndex = ChipStackAnchor.GetChildCount() - 1;
+                if (lastChildIndex >= 0)
+                {
+                    Node topChip = ChipStackAnchor.GetChild(lastChildIndex);
+                    ChipStackAnchor.RemoveChild(topChip);
+                    topChip.QueueFree();
+                }
+            }
+        }
+    }
+
     private void BuildDeck()
     {
         _deck.Clear();
@@ -135,11 +217,7 @@ public partial class Blackjack : Control
             for (int i = 0; i < 13; i++) 
             {
                 int cardId = startIdx + i;
-                int val = 0;
-                
-                if (i == 0) val = 11; 
-                else if (i >= 1 && i <= 9) val = i + 1; 
-                else val = 10; 
+                int val = (i == 0) ? 11 : (i >= 1 && i <= 9) ? i + 1 : 10; 
 
                 _deck.Add(new PlayingCard 
                 { 
@@ -150,6 +228,7 @@ public partial class Blackjack : Control
         }
     }
 
+    // --- Sliding & Glitching Card ---
     private void DealCard(List<PlayingCard> hand, HBoxContainer uiContainer)
     {
         if (_deck.Count == 0) BuildDeck();
@@ -159,33 +238,32 @@ public partial class Blackjack : Control
         _deck.RemoveAt(index);
         hand.Add(drawnCard);
 
+        Control placeholder = new Control { CustomMinimumSize = new Vector2(80, 120) };
+
         TextureRect cardVisual = new TextureRect
         {
             CustomMinimumSize = new Vector2(80, 120),
             ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize,
-            StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered
+            StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered,
+            Position = new Vector2(0, -600)
         };
 
-string path = $"res://Cards/{drawnCard.ImageName}"; 
-        if (ResourceLoader.Exists(path))
-        {
-            cardVisual.Texture = GD.Load<Texture2D>(path);
-        }
+        string path = $"res://Cards/{drawnCard.ImageName}"; 
+        if (ResourceLoader.Exists(path)) cardVisual.Texture = GD.Load<Texture2D>(path);
 
-        // --- ADD THESE 4 LINES HERE ---
-        
-        // 1. Load the material and duplicate it (so each card glitches independently)
         ShaderMaterial glitchMat = GD.Load<ShaderMaterial>("res://Cards/GlitchMaterial.tres").Duplicate() as ShaderMaterial;
         cardVisual.Material = glitchMat;
-        
-        // 2. Create a Godot Tween to animate the threshold over 0.5 seconds
-        Tween tween = GetTree().CreateTween();
-        tween.TweenProperty(glitchMat, "shader_parameter/threshold", 1.0f, 0.5f);
 
-        // ------------------------------
-        uiContainer.AddChild(cardVisual);
+        uiContainer.AddChild(placeholder);
+        placeholder.AddChild(cardVisual);
+
+        Tween tween = GetTree().CreateTween();
+        tween.SetParallel(true);
+        tween.TweenProperty(cardVisual, "position", Vector2.Zero, 0.4f).SetTrans(Tween.TransitionType.Cubic).SetEase(Tween.EaseType.Out);
+        tween.TweenProperty(glitchMat, "shader_parameter/threshold", 1.0f, 0.6f);
     }
 
+    // --- Sliding & Glitching Hidden Card ---
     private void DealHiddenCard()
     {
         if (_deck.Count == 0) BuildDeck();
@@ -195,20 +273,29 @@ string path = $"res://Cards/{drawnCard.ImageName}";
         _deck.RemoveAt(index);
         _dealerHand.Add(drawnCard); 
 
+        Control placeholder = new Control { CustomMinimumSize = new Vector2(80, 120) };
+
         _hiddenCardVisual = new TextureRect
         {
             CustomMinimumSize = new Vector2(80, 120),
             ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize,
-            StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered
+            StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered,
+            Position = new Vector2(0, -600)
         };
 
         string path = "res://Cards/28_kerenel_Cards.png"; 
-        if (ResourceLoader.Exists(path))
-        {
-            _hiddenCardVisual.Texture = GD.Load<Texture2D>(path);
-        }
+        if (ResourceLoader.Exists(path)) _hiddenCardVisual.Texture = GD.Load<Texture2D>(path);
 
-        DealerHandUI.AddChild(_hiddenCardVisual);
+        ShaderMaterial glitchMat = GD.Load<ShaderMaterial>("res://Cards/GlitchMaterial.tres").Duplicate() as ShaderMaterial;
+        _hiddenCardVisual.Material = glitchMat;
+
+        DealerHandUI.AddChild(placeholder);
+        placeholder.AddChild(_hiddenCardVisual);
+
+        Tween tween = GetTree().CreateTween();
+        tween.SetParallel(true);
+        tween.TweenProperty(_hiddenCardVisual, "position", Vector2.Zero, 0.4f).SetTrans(Tween.TransitionType.Cubic).SetEase(Tween.EaseType.Out);
+        tween.TweenProperty(glitchMat, "shader_parameter/threshold", 1.0f, 0.6f);
     }
 
     private int CalculateScore(List<PlayingCard> hand)
@@ -233,14 +320,8 @@ string path = $"res://Cards/{drawnCard.ImageName}";
 
     private void UpdateScoresUI()
     {
-        if (_isDealerRevealed)
-        {
-            DealerScoreLabel.Text = $"Dealer: {CalculateScore(_dealerHand)}";
-        }
-        else if (_dealerHand.Count > 0)
-        {
-            DealerScoreLabel.Text = $"Dealer: {_dealerHand[0].ScoreValue}";
-        }
+        if (_isDealerRevealed) DealerScoreLabel.Text = $"Dealer: {CalculateScore(_dealerHand)}";
+        else if (_dealerHand.Count > 0) DealerScoreLabel.Text = $"Dealer: {_dealerHand[0].ScoreValue}";
 
         Hand1ScoreLabel.Text = $"Hand 1: {CalculateScore(_hand1)}";
         if (_isSplit) Hand2ScoreLabel.Text = $"Hand 2: {CalculateScore(_hand2)}";
@@ -260,8 +341,6 @@ string path = $"res://Cards/{drawnCard.ImageName}";
         if (score >= 21) OnStandPressed(); 
     }
 
-    // --- BUTTON ACTIONS ---
-
     private void OnHitPressed()
     {
         if (_activeHand == 1) DealCard(_hand1, Hand1UI);
@@ -278,16 +357,12 @@ string path = $"res://Cards/{drawnCard.ImageName}";
             _activeHand = 2; 
             CheckActionButtons();
         }
-        else
-        {
-            ResolveDealerTurn(); 
-        }
+        else ResolveDealerTurn(); 
     }
 
     private void OnDoubleDownPressed()
     {
         _playerWallet -= _currentBet; 
-        if (WalletLabel != null) WalletLabel.Text = $"WALLET: ${_playerWallet}";
         
         if (_activeHand == 1)
         {
@@ -307,7 +382,6 @@ string path = $"res://Cards/{drawnCard.ImageName}";
     private void OnSplitPressed()
     {
         _playerWallet -= _currentBet;
-        if (WalletLabel != null) WalletLabel.Text = $"WALLET: ${_playerWallet}";
         
         _hand2Bet = _currentBet;
         _isSplit = true;
@@ -332,7 +406,6 @@ string path = $"res://Cards/{drawnCard.ImageName}";
     {
         HitBtn.Disabled = true; StandBtn.Disabled = true; DoubleBtn.Disabled = true; SplitBtn.Disabled = true;
 
-        // Reveal the hidden card
         _isDealerRevealed = true;
         if (_hiddenCardVisual != null && _dealerHand.Count >= 2)
         {
@@ -343,14 +416,9 @@ string path = $"res://Cards/{drawnCard.ImageName}";
         UpdateScoresUI();
         await ToSignal(GetTree().CreateTimer(1.0f), SceneTreeTimer.SignalName.Timeout);
 
-        // CHECK IF PLAYER BUSTED:
         bool playerHasViableHand = CalculateScore(_hand1) <= 21;
-        if (_isSplit && CalculateScore(_hand2) <= 21) 
-        {
-            playerHasViableHand = true;
-        }
+        if (_isSplit && CalculateScore(_hand2) <= 21) playerHasViableHand = true;
 
-        // Only draw cards if the player has a hand that can still win
         if (playerHasViableHand)
         {
             while (CalculateScore(_dealerHand) < 17)
@@ -371,7 +439,6 @@ string path = $"res://Cards/{drawnCard.ImageName}";
         
         string resultText = "";
 
-        // Hand 1 Evaluation
         if (h1Score > 21) resultText += "Hand 1: BUST. ";
         else if (dealerScore > 21 || h1Score > dealerScore) 
         {
@@ -385,7 +452,6 @@ string path = $"res://Cards/{drawnCard.ImageName}";
         }
         else resultText += "Hand 1: LOSE. ";
 
-        // Hand 2 Evaluation (If Split)
         if (_isSplit)
         {
             int h2Score = CalculateScore(_hand2);
@@ -404,7 +470,8 @@ string path = $"res://Cards/{drawnCard.ImageName}";
         }
 
         ResultLabel.Text = resultText + "\n\n[ PRESS SPACE TO DEAL ]";
-        if (WalletLabel != null) WalletLabel.Text = $"WALLET: ${_playerWallet}";
+        
+        UpdateVisualChips(); 
 
         _waitingForNextRound = true; 
     }
