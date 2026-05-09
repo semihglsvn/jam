@@ -10,6 +10,9 @@
 [ext_resource type="Texture2D" uid="uid://6vfba72it2pi" path="res://Slot Machine/slot-machine5.png" id="5_af41c"]
 [ext_resource type="Texture2D" uid="uid://cdsmxgobpue0a" path="res://Slot Machine/slot-symbol3.png" id="5_llnrq"]
 [ext_resource type="Texture2D" uid="uid://wpu6c8uceo35" path="res://coin_spin-Sheet.png" id="10_4efol"]
+[ext_resource type="AudioStream" uid="uid://cobm31cnfb8ff" path="res://SlotKolCekme.wav" id="10_32t3t"]
+[ext_resource type="AudioStream" uid="uid://cmni20oedahom" path="res://SFX/Slot Win.wav" id="12_ttvxg"]
+[ext_resource type="AudioStream" uid="uid://nujs26red7f6" path="res://SFX/Slot Loose.wav" id="13_kh8ix"]
 
 [sub_resource type="Gradient" id="Gradient_pccns"]
 colors = PackedColorArray(0.2901961, 0.05490196, 0.09019608, 1, 0, 0.05490196, 0.09019608, 1)
@@ -35,7 +38,7 @@ gravity = Vector3(0, 98, 0)
 anim_speed_min = 1.0
 anim_speed_max = 2.0
 
-[node name="SlotGame" type="Control" unique_id=1091437973 node_paths=PackedStringArray("ReelGrid", "WinLabel", "LeverButton", "MainCamera", "CoinParticles")]
+[node name="SlotGame" type="Control" unique_id=1091437973 node_paths=PackedStringArray("ReelGrid", "WinLabel", "LeverButton", "SpinSFX", "StopSFX", "MainCamera", "CoinParticles")]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
@@ -45,6 +48,8 @@ Symbols = Array[Texture2D]([ExtResource("2_pccns"), ExtResource("3_4efol"), ExtR
 ReelGrid = NodePath("ReelGrid")
 WinLabel = NodePath("WinLabel")
 LeverButton = NodePath("Lever")
+SpinSFX = NodePath("SpinSound")
+StopSFX = NodePath("WinSound")
 MainCamera = NodePath("Camera2D")
 CoinParticles = NodePath("CoinParticles")
 
@@ -108,14 +113,6 @@ offset_bottom = 653.0
 texture_normal = ExtResource("2_p1dqe")
 texture_pressed = ExtResource("3_ofl6k")
 
-[node name="SpinSound" type="AudioStreamPlayer2D" parent="." unique_id=808868799]
-position = Vector2(0, 1)
-
-[node name="StopSound" type="AudioStreamPlayer2D" parent="." unique_id=737977125]
-position = Vector2(0, 1)
-
-[node name="WinSound" type="AudioStreamPlayer2D" parent="." unique_id=1434613872]
-
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1545338878]
 position = Vector2(-1, 0)
 anchor_mode = 0
@@ -130,5 +127,14 @@ lifetime = 2.0
 one_shot = true
 explosiveness = 0.95
 process_material = SubResource("ParticleProcessMaterial_pccns")
+
+[node name="SpinSound" type="AudioStreamPlayer" parent="." unique_id=1173381495]
+stream = ExtResource("10_32t3t")
+
+[node name="WinSound" type="AudioStreamPlayer" parent="." unique_id=1708877623]
+stream = ExtResource("12_ttvxg")
+
+[node name="LoseSound" type="AudioStreamPlayer" parent="." unique_id=450024017]
+stream = ExtResource("13_kh8ix")
 
 [connection signal="pressed" from="Lever" to="." method="OnLeverPulled"]

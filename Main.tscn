@@ -6,8 +6,8 @@
 [ext_resource type="Shader" uid="uid://345f5lgpiae2" path="res://TransitionGlitch.gdshader" id="4_fos0i"]
 [ext_resource type="Shader" uid="uid://xe6qtpk4qlug" path="res://TransitionLabel.gdshader" id="5_3dxm6"]
 [ext_resource type="FontFile" uid="uid://bmnfihoijqam7" path="res://Fonts/monogram-extended.ttf" id="6_lgr22"]
-[ext_resource type="PackedScene" path="res://harita.tscn" id="7_trn2v"]
-[ext_resource type="PackedScene" path="res://gamemanager.tscn" id="8_03owx"]
+[ext_resource type="PackedScene" uid="uid://42s157am6bll" path="res://harita.tscn" id="7_trn2v"]
+[ext_resource type="PackedScene" uid="uid://dcgyns6x4uq3e" path="res://gamemanager.tscn" id="8_03owx"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3dxm6"]
 shader = ExtResource("4_fos0i")
@@ -32,6 +32,8 @@ TransitionLabel = NodePath("TransitionLayer/CanvasGroup/Label")
 
 [node name="SlotGame" parent="." unique_id=1091437973 instance=ExtResource("2_uu6xs")]
 z_index = 1
+offset_top = -1.0
+offset_bottom = 39.0
 
 [node name="TransitionLayer" type="CanvasLayer" parent="." unique_id=1561616899]
 layer = 100
