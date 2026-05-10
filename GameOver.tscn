@@ -1,0 +1,40 @@
+[gd_scene format=3 uid="uid://fdy880eyl1of"]
+
+[ext_resource type="FontFile" uid="uid://bmnfihoijqam7" path="res://Fonts/monogram-extended.ttf" id="1_40baj"]
+[ext_resource type="Shader" uid="uid://cpr1idgdfad78" path="res://Glitchmat.tres" id="1_a1htc"]
+[ext_resource type="Script" uid="uid://b7n2xiwsy1sw6" path="res://GameOverScreen.cs" id="1_eksk4"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_eksk4"]
+shader = ExtResource("1_a1htc")
+shader_parameter/intensity = 0.005
+shader_parameter/speed = 15.0
+shader_parameter/frequency = 0.05
+
+[sub_resource type="LabelSettings" id="LabelSettings_eksk4"]
+font_size = 167
+
+[node name="GameOverScreen" type="CanvasLayer" unique_id=1943305512]
+script = ExtResource("1_eksk4")
+
+[node name="CanvasGroup" type="CanvasGroup" parent="." unique_id=903257693]
+material = SubResource("ShaderMaterial_eksk4")
+
+[node name="ColorRect" type="ColorRect" parent="CanvasGroup" unique_id=146820480]
+offset_right = 1151.0
+offset_bottom = 651.0
+color = Color(0, 0, 0, 1)
+
+[node name="Label" type="Label" parent="CanvasGroup" unique_id=1533100869]
+texture_filter = 1
+offset_left = 297.0
+offset_top = 224.0
+offset_right = 861.0
+offset_bottom = 357.0
+theme_override_colors/font_shadow_color = Color(0.96862745, 0.58431375, 1, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/outline_size = 2
+theme_override_fonts/font = ExtResource("1_40baj")
+theme_override_font_sizes/font_size = 32
+text = "game over"
+label_settings = SubResource("LabelSettings_eksk4")
