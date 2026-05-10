@@ -12,7 +12,6 @@
 [ext_resource type="Texture2D" uid="uid://wpu6c8uceo35" path="res://coin_spin-Sheet.png" id="10_4efol"]
 [ext_resource type="AudioStream" uid="uid://e84evefrdho2" path="res://SlotKolCekme.wav" id="11_kh8ix"]
 [ext_resource type="AudioStream" uid="uid://dpmnryuxitsw2" path="res://Slot Win.wav" id="12_2yffs"]
-[ext_resource type="AudioStream" uid="uid://dwlo8bw8nv11t" path="res://Slot.wav" id="14_kh8ix"]
 [ext_resource type="AudioStream" uid="uid://cmguy44jc5ek1" path="res://SlotDonme.wav" id="14_rshla"]
 
 [sub_resource type="Gradient" id="Gradient_pccns"]
@@ -135,10 +134,5 @@ stream = ExtResource("12_2yffs")
 
 [node name="spin_sfx" type="AudioStreamPlayer" parent="." unique_id=1188769603]
 stream = ExtResource("14_rshla")
-
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=1138811827]
-stream = ExtResource("14_kh8ix")
-volume_db = -2.0
-autoplay = true
 
 [connection signal="pressed" from="Lever" to="." method="OnLeverPulled"]

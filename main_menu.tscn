@@ -1,0 +1,40 @@
+[gd_scene format=3 uid="uid://dhpvvdb6brvy6"]
+
+[ext_resource type="Shader" uid="uid://cpr1idgdfad78" path="res://Glitchmat.tres" id="1_06t4h"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7vrkn"]
+shader = ExtResource("1_06t4h")
+shader_parameter/intensity = 0.005
+shader_parameter/speed = 15.0
+shader_parameter/frequency = 0.05
+
+[node name="MainMenu" type="Control" unique_id=928059949]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1653874286]
+layout_mode = 0
+offset_right = 1174.0
+offset_bottom = 767.0
+color = Color(0, 0, 0, 1)
+
+[node name="Enter" type="Button" parent="." unique_id=805767586]
+material = SubResource("ShaderMaterial_7vrkn")
+layout_mode = 0
+offset_left = 530.0
+offset_top = 211.0
+offset_right = 638.0
+offset_bottom = 242.0
+text = "ENTER GAME"
+
+[node name="Credits" type="Button" parent="." unique_id=372248524]
+layout_mode = 0
+offset_left = 536.0
+offset_top = 391.0
+offset_right = 644.0
+offset_bottom = 422.0
+text = "CREDITS"
