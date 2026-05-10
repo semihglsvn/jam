@@ -3,8 +3,12 @@ using System;
 
 public partial class Main : Node2D 
 {
-    [ExportCategory("Background Music")]
+    [ExportCategory("Audio")]
     [Export] public AudioStreamPlayer BGMPlayer;
+    [Export] public AudioStreamPlayer TransitionSFXPlayer; // The megaphone for glitches
+    [Export] public AudioStream TransitionSound;          // The glitch sound file
+
+    [ExportCategory("Background Music")]
     [Export] public AudioStream PlatformMusic;
     [Export] public AudioStream BlackjackMusic;
     [Export] public AudioStream SlotsMusic;
@@ -68,7 +72,6 @@ public partial class Main : Node2D
 
     public override void _Ready()
     {
-        // Initial setup
         OyunDurumunuAyarla(PlatformScene, true, true);
         OyunDurumunuAyarla(BlackjackScene, false, false);
         OyunDurumunuAyarla(SlotScene, false, false);
@@ -100,18 +103,12 @@ public partial class Main : Node2D
 
     private string GetRandomMessage(string targetGame)
     {
-        string[] pool;
-        switch (targetGame)
-        {
-            case "Blackjack": pool = BlackjackMessages; break;
-            case "Slots": pool = SlotsMessages; break;
-            case "Araba": pool = ArabaMessages; break;
-            case "Koridor": pool = KoridorMessages; break;
-            case "Platform": pool = PlatformerMessages; break;
-            default: return "...";
-        }
-        if (pool == null || pool.Length == 0) return "QUIT NOW.";
-        return pool[_rng.RandiRange(0, pool.Length - 1)];
+        string[] pool = targetGame switch {
+            "Blackjack" => BlackjackMessages, "Slots" => SlotsMessages,
+            "Araba" => ArabaMessages, "Koridor" => KoridorMessages,
+            "Platform" => PlatformerMessages, _ => null
+        };
+        return (pool == null || pool.Length == 0) ? "..." : pool[_rng.RandiRange(0, pool.Length - 1)];
     }
 
     private void OyunDurumunuAyarla(Node oyunDugumu, bool gorunurMu, bool calissinMi)
@@ -129,7 +126,6 @@ public partial class Main : Node2D
             }
         }
 
-        // Banishment Fix: Teleport inactive games to prevent invisible wall collisions
         if (oyunDugumu is Node2D n2d)
         {
             n2d.Position = gorunurMu ? Vector2.Zero : new Vector2(-50000, -50000);
@@ -159,7 +155,7 @@ public partial class Main : Node2D
             cam2D.Enabled = true;
             cam2D.MakeCurrent();
             cam2D.ResetSmoothing(); 
-            cam2D.ForceUpdateScroll(); // Force instant snap
+            cam2D.ForceUpdateScroll(); 
             return true;
         }
         else if (dugum is Camera3D cam3D)
@@ -177,34 +173,27 @@ public partial class Main : Node2D
 
     private void StartNextTimer()
     {
-        float beklemeSuresi = PlatformDuration; 
-        if (_aktifOyun == "Blackjack") beklemeSuresi = BlackjackDuration;
-        else if (_aktifOyun == "Slots") beklemeSuresi = SlotsDuration;
-        else if (_aktifOyun == "Araba") beklemeSuresi = ArabaDuration;
-        else if (_aktifOyun == "Koridor") beklemeSuresi = KoridorDuration;
-
+        float beklemeSuresi = _aktifOyun switch {
+            "Platform" => PlatformDuration, "Blackjack" => BlackjackDuration,
+            "Slots" => SlotsDuration, "Araba" => ArabaDuration,
+            "Koridor" => KoridorDuration, _ => 5.0f
+        };
         _autoSwitchTimer.Start(beklemeSuresi);
     }
 
     private void OnAutoSwitchTimeout()
     {
         if (_isTransitioning) return;
-
-        if (_aktifOyun == "Platform")
-        {
-            string yeniOyun = _minioyunListesi[_rng.RandiRange(0, _minioyunListesi.Length - 1)];
-            SwitchGame(yeniOyun, GetRandomMessage(yeniOyun));
-        }
-        else
-        {
-            SwitchGame("Platform", GetRandomMessage("Platform"));
-        }
+        if (_aktifOyun == "Platform") {
+            string next = _minioyunListesi[_rng.RandiRange(0, _minioyunListesi.Length - 1)];
+            SwitchGame(next, GetRandomMessage(next));
+        } else SwitchGame("Platform", GetRandomMessage("Platform"));
     }
 
     public void MinioyunKazanildi()
     {
-        if (_isTransitioning || _aktifOyun == "Platform") return;
-        SwitchGame("Platform", GetRandomMessage("Platform"));
+        if (!_isTransitioning && _aktifOyun != "Platform") 
+            SwitchGame("Platform", GetRandomMessage("Platform"));
     }
 
     public void SwitchGame(string targetGame, string message)
@@ -214,6 +203,13 @@ public partial class Main : Node2D
 
         if (TransitionLabel != null) TransitionLabel.Text = message;
         
+        // --- TRANSITION SOUND LOGIC ---
+        if (TransitionSFXPlayer != null && TransitionSound != null)
+        {
+            TransitionSFXPlayer.Stream = TransitionSound;
+            TransitionSFXPlayer.Play();
+        }
+
         Tween tween = GetTree().CreateTween();
         ShaderMaterial mat = TransitionRect?.Material as ShaderMaterial;
 
@@ -231,7 +227,6 @@ public partial class Main : Node2D
 
         tween.TweenInterval(2.5f);
         
-        // --- DARK PHASE: Everything happens while screen is black ---
         tween.TweenCallback(Callable.From(() =>
         {
             OyunDurumunuAyarla(PlatformScene, false, false);
@@ -244,11 +239,11 @@ public partial class Main : Node2D
 
             if (BGMPlayer != null)
             {
-                if (targetGame == "Platform") BGMPlayer.Stream = PlatformMusic;
-                else if (targetGame == "Blackjack") BGMPlayer.Stream = BlackjackMusic;
-                else if (targetGame == "Slots") BGMPlayer.Stream = SlotsMusic;
-                else if (targetGame == "Araba") BGMPlayer.Stream = ArabaMusic;
-                else if (targetGame == "Koridor") BGMPlayer.Stream = KoridorMusic;
+                BGMPlayer.Stream = targetGame switch {
+                    "Platform" => PlatformMusic, "Blackjack" => BlackjackMusic,
+                    "Slots" => SlotsMusic, "Araba" => ArabaMusic,
+                    "Koridor" => KoridorMusic, _ => BGMPlayer.Stream
+                };
                 BGMPlayer.Play();
             }
 
@@ -279,13 +274,9 @@ public partial class Main : Node2D
         }));
     }
 
-    private Node GetOyunDugumu(string isim)
-    {
-        if (isim == "Platform") return PlatformScene;
-        if (isim == "Blackjack") return BlackjackScene;
-        if (isim == "Slots") return SlotScene;
-        if (isim == "Araba") return ArabaScene;
-        if (isim == "Koridor") return KoridorScene;
-        return null;
-    }
+    private Node GetOyunDugumu(string isim) => isim switch {
+        "Platform" => PlatformScene, "Blackjack" => BlackjackScene,
+        "Slots" => SlotScene, "Araba" => ArabaScene,
+        "Koridor" => KoridorScene, _ => null
+    };
 }

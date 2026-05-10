@@ -5,7 +5,7 @@ public partial class RhythmManager : Node
     [Export] public TileMapLayer LayerStandard; // Always Solid
     [Export] public TileMapLayer LayerB;        // Swaps
     [Export] public TileMapLayer LayerC;        // Swaps
-    [Export] public float BeatInterval = 2.0f;
+    [Export] public float BeatInterval = 1.09f;
 
     private Timer _beatTimer;
     private bool _stateToggle = true;
@@ -63,4 +63,4 @@ public partial class RhythmManager : Node
             GD.PrintErr($"{layer.Name} is missing a ShaderMaterial! Check the Inspector.");
         }
     }
-}
+}	

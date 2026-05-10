@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://7apkl28ctpfw"]
 
 [ext_resource type="Script" uid="uid://0bkxp725ii43" path="res://Main.cs" id="1_cm0pq"]
+[ext_resource type="AudioStream" uid="uid://dvldheam6fob7" path="res://ses/game_change_glitch.wav" id="2_fpfj3"]
 [ext_resource type="AudioStream" uid="uid://ghe8k2v3g7hn" path="res://ses/Platformer.wav" id="2_j4qnp"]
 [ext_resource type="PackedScene" uid="uid://j6sgwws7oiv3" path="res://blackjack.tscn" id="2_r0du0"]
 [ext_resource type="PackedScene" uid="uid://do2xywbrn17t2" path="res://slot_game.tscn" id="2_uu6xs"]
@@ -26,9 +27,11 @@ shader_parameter/intensity = 0.005
 shader_parameter/speed = 15.0
 shader_parameter/frequency = 0.05
 
-[node name="Main" type="Node2D" unique_id=892963943 node_paths=PackedStringArray("BGMPlayer", "PlatformScene", "BlackjackScene", "SlotScene", "ArabaScene", "KoridorScene", "TransitionRect", "TextBackground", "TransitionLabel")]
+[node name="Main" type="Node2D" unique_id=892963943 node_paths=PackedStringArray("BGMPlayer", "TransitionSFXPlayer", "PlatformScene", "BlackjackScene", "SlotScene", "ArabaScene", "KoridorScene", "TransitionRect", "TextBackground", "TransitionLabel")]
 script = ExtResource("1_cm0pq")
 BGMPlayer = NodePath("BGMPlayer")
+TransitionSFXPlayer = NodePath("Transtionsfx")
+TransitionSound = ExtResource("2_fpfj3")
 PlatformMusic = ExtResource("2_j4qnp")
 BlackjackMusic = ExtResource("3_fpfj3")
 SlotsMusic = ExtResource("4_sc1dx")
@@ -100,3 +103,5 @@ text = "placeholder"
 [node name="gamemanager" parent="." unique_id=1748412387 instance=ExtResource("8_03owx")]
 
 [node name="BGMPlayer" type="AudioStreamPlayer" parent="." unique_id=242526641]
+
+[node name="Transtionsfx" type="AudioStreamPlayer" parent="." unique_id=2032708826]
