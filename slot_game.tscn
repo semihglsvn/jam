@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://bk5laovitl6j4"]
+[gd_scene format=3 uid="uid://do2xywbrn17t2"]
 
 [ext_resource type="Script" uid="uid://0lj5r27dspxj" path="res://SlotGame.cs" id="1_6y2k4"]
 [ext_resource type="Texture2D" uid="uid://bx6hns3p2xtsl" path="res://Slot Machine/slot-machine2.png" id="2_p1dqe"]
@@ -10,9 +10,10 @@
 [ext_resource type="Texture2D" uid="uid://6vfba72it2pi" path="res://Slot Machine/slot-machine5.png" id="5_af41c"]
 [ext_resource type="Texture2D" uid="uid://cdsmxgobpue0a" path="res://Slot Machine/slot-symbol3.png" id="5_llnrq"]
 [ext_resource type="Texture2D" uid="uid://wpu6c8uceo35" path="res://coin_spin-Sheet.png" id="10_4efol"]
-[ext_resource type="AudioStream" uid="uid://cobm31cnfb8ff" path="res://SlotKolCekme.wav" id="10_32t3t"]
-[ext_resource type="AudioStream" uid="uid://cmni20oedahom" path="res://SFX/Slot Win.wav" id="12_ttvxg"]
-[ext_resource type="AudioStream" uid="uid://nujs26red7f6" path="res://SFX/Slot Loose.wav" id="13_kh8ix"]
+[ext_resource type="AudioStream" uid="uid://e84evefrdho2" path="res://SlotKolCekme.wav" id="11_kh8ix"]
+[ext_resource type="AudioStream" uid="uid://dpmnryuxitsw2" path="res://Slot Win.wav" id="12_2yffs"]
+[ext_resource type="AudioStream" uid="uid://dwlo8bw8nv11t" path="res://Slot.wav" id="14_kh8ix"]
+[ext_resource type="AudioStream" uid="uid://cmguy44jc5ek1" path="res://SlotDonme.wav" id="14_rshla"]
 
 [sub_resource type="Gradient" id="Gradient_pccns"]
 colors = PackedColorArray(0.2901961, 0.05490196, 0.09019608, 1, 0, 0.05490196, 0.09019608, 1)
@@ -38,7 +39,7 @@ gravity = Vector3(0, 98, 0)
 anim_speed_min = 1.0
 anim_speed_max = 2.0
 
-[node name="SlotGame" type="Control" unique_id=1091437973 node_paths=PackedStringArray("ReelGrid", "WinLabel", "LeverButton", "SpinSFX", "StopSFX", "MainCamera", "CoinParticles")]
+[node name="SlotGame" type="Control" unique_id=1091437973 node_paths=PackedStringArray("ReelGrid", "WinLabel", "LeverButton", "MainCamera", "CoinParticles")]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
@@ -48,8 +49,6 @@ Symbols = Array[Texture2D]([ExtResource("2_pccns"), ExtResource("3_4efol"), ExtR
 ReelGrid = NodePath("ReelGrid")
 WinLabel = NodePath("WinLabel")
 LeverButton = NodePath("Lever")
-SpinSFX = NodePath("SpinSound")
-StopSFX = NodePath("WinSound")
 MainCamera = NodePath("Camera2D")
 CoinParticles = NodePath("CoinParticles")
 
@@ -128,13 +127,18 @@ one_shot = true
 explosiveness = 0.95
 process_material = SubResource("ParticleProcessMaterial_pccns")
 
-[node name="SpinSound" type="AudioStreamPlayer" parent="." unique_id=1173381495]
-stream = ExtResource("10_32t3t")
+[node name="lever_sfx" type="AudioStreamPlayer" parent="." unique_id=418288161]
+stream = ExtResource("11_kh8ix")
 
-[node name="WinSound" type="AudioStreamPlayer" parent="." unique_id=1708877623]
-stream = ExtResource("12_ttvxg")
+[node name="win_sfx" type="AudioStreamPlayer" parent="." unique_id=20553898]
+stream = ExtResource("12_2yffs")
 
-[node name="LoseSound" type="AudioStreamPlayer" parent="." unique_id=450024017]
-stream = ExtResource("13_kh8ix")
+[node name="spin_sfx" type="AudioStreamPlayer" parent="." unique_id=1188769603]
+stream = ExtResource("14_rshla")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=1138811827]
+stream = ExtResource("14_kh8ix")
+volume_db = -2.0
+autoplay = true
 
 [connection signal="pressed" from="Lever" to="." method="OnLeverPulled"]

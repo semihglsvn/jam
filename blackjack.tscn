@@ -1,10 +1,12 @@
-[gd_scene format=3 uid="uid://ddu0xk4awg8tx"]
+[gd_scene format=3 uid="uid://j6sgwws7oiv3"]
 
 [ext_resource type="Script" uid="uid://bafjf6hra5f63" path="res://Blackjack.cs" id="1_5smsy"]
 [ext_resource type="FontFile" uid="uid://bmnfihoijqam7" path="res://Fonts/monogram-extended.ttf" id="1_42u37"]
 [ext_resource type="Shader" uid="uid://b4wyo0cv7m65k" path="res://Cards/CRTBackground.gdshader" id="3_7h45n"]
 [ext_resource type="Texture2D" uid="uid://b3fop82untibn" path="res://SBS - 2D Poker Pack/Top-Down/Chips/Template/chip.png" id="3_lt7f4"]
-[ext_resource type="AudioStream" uid="uid://df87rtcei3v8g" path="res://SFX/Chip.wav" id="5_eux2x"]
+[ext_resource type="AudioStream" uid="uid://cnvhv4682vh8f" path="res://BlackJack.wav" id="5_eux2x"]
+[ext_resource type="AudioStream" uid="uid://c6ktmyfr6fdo" path="res://Chip.wav" id="6_4q0pi"]
+[ext_resource type="AudioStream" uid="uid://b51ljw0jpko3s" path="res://KartShort.wav" id="7_sta1r"]
 
 [sub_resource type="Theme" id="Theme_7h45n"]
 default_font = ExtResource("1_42u37")
@@ -24,7 +26,7 @@ gradient = SubResource("Gradient_epipi")
 fill = 1
 fill_from = Vector2(0.48706895, 0.47413793)
 
-[node name="BlackjackGame" type="Control" unique_id=1539045445 node_paths=PackedStringArray("DealerHandUI", "Hand1UI", "Hand2UI", "Hand2Area", "DealerScoreLabel", "Hand1ScoreLabel", "Hand2ScoreLabel", "ResultLabel", "HitBtn", "StandBtn", "DoubleBtn", "SplitBtn", "ChipStackAnchor", "CardDealSFX", "ChipClinkSFX", "WinSFX", "LoseSFX", "BustSFX")]
+[node name="BlackjackGame" type="Control" unique_id=1539045445 node_paths=PackedStringArray("DealerHandUI", "Hand1UI", "Hand2UI", "Hand2Area", "DealerScoreLabel", "Hand1ScoreLabel", "Hand2ScoreLabel", "ResultLabel", "HitBtn", "StandBtn", "DoubleBtn", "SplitBtn", "ChipStackAnchor")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -47,11 +49,6 @@ DoubleBtn = NodePath("CanvasLayer/ThemeRoot/ButtonRow/DoubleButton")
 SplitBtn = NodePath("CanvasLayer/ThemeRoot/ButtonRow/SplitButton")
 ChipStackAnchor = NodePath("CanvasLayer/ThemeRoot/ChipStackAnchor")
 ChipTexture = ExtResource("3_lt7f4")
-CardDealSFX = NodePath("Card Deal")
-ChipClinkSFX = NodePath("Chip")
-WinSFX = NodePath("Win")
-LoseSFX = NodePath("Lose")
-BustSFX = NodePath("Bust")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1885302533]
 
@@ -195,13 +192,14 @@ offset_right = 231.0
 offset_bottom = -133.0
 grow_vertical = 0
 
-[node name="Card Deal" type="AudioStreamPlayer" parent="." unique_id=1661559331]
-
-[node name="Chip" type="AudioStreamPlayer" parent="." unique_id=1573105564]
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=198016479]
 stream = ExtResource("5_eux2x")
+volume_db = -3.0
+autoplay = true
 
-[node name="Win" type="AudioStreamPlayer" parent="." unique_id=94645572]
+[node name="chip_sfx" type="AudioStreamPlayer" parent="." unique_id=1945662990]
+stream = ExtResource("6_4q0pi")
 
-[node name="Lose" type="AudioStreamPlayer" parent="." unique_id=1571025091]
-
-[node name="Bust" type="AudioStreamPlayer" parent="." unique_id=516530663]
+[node name="card_sfx" type="AudioStreamPlayer" parent="." unique_id=1452777713]
+stream = ExtResource("7_sta1r")
+volume_db = -3.0
