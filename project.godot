@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Jam"
-run/main_scene="uid://7apkl28ctpfw"
+run/main_scene="uid://dhpvvdb6brvy6"
 config/features=PackedStringArray("4.6", "C#", "GL Compatibility")
 config/icon="res://icon.svg"
 

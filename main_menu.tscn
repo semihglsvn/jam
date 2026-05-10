@@ -1,0 +1,51 @@
+[gd_scene format=3 uid="uid://dhpvvdb6brvy6"]
+
+[ext_resource type="Shader" uid="uid://cpr1idgdfad78" path="res://Glitchmat.tres" id="1_06t4h"]
+[ext_resource type="Script" uid="uid://c85531gf3hrt4" path="res://MainMenu.cs" id="1_fu7sn"]
+[ext_resource type="FontFile" uid="uid://bmnfihoijqam7" path="res://Fonts/monogram-extended.ttf" id="3_jix8l"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_06t4h"]
+shader = ExtResource("1_06t4h")
+shader_parameter/intensity = 0.005
+shader_parameter/speed = 15.0
+shader_parameter/frequency = 0.05
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_glbon"]
+
+[node name="MainMenu" type="Control" unique_id=928059949 node_paths=PackedStringArray("EnterButton")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_fu7sn")
+EnterButton = NodePath("CanvasGroup/Label2")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1653874286]
+layout_mode = 0
+offset_right = 1174.0
+offset_bottom = 767.0
+color = Color(0, 0, 0, 1)
+
+[node name="CanvasGroup" type="CanvasGroup" parent="." unique_id=2090450706]
+material = SubResource("ShaderMaterial_06t4h")
+
+[node name="Label2" type="Button" parent="CanvasGroup" unique_id=1255082197]
+texture_filter = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 468.0
+offset_top = 300.0
+offset_right = 674.0
+offset_bottom = 346.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/outline_size = 2
+theme_override_fonts/font = ExtResource("3_jix8l")
+theme_override_font_sizes/font_size = 48
+theme_override_styles/normal = SubResource("StyleBoxEmpty_glbon")
+text = "Enter the game"
