@@ -24,7 +24,7 @@ public partial class Main : Node2D
     [Export] public Label TransitionLabel;
 
     [ExportCategory("Game Durations (Seconds)")]
-    [Export] public float PlatformDuration = 5.0f;
+    [Export] public float PlatformDuration = 50.0f;
     [Export] public float BlackjackDuration = 5.0f;
     [Export] public float SlotsDuration = 5.0f;
     [Export] public float ArabaDuration = 40.0f;
