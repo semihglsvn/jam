@@ -1,14 +1,20 @@
 [gd_scene format=3 uid="uid://7apkl28ctpfw"]
 
 [ext_resource type="Script" uid="uid://0bkxp725ii43" path="res://Main.cs" id="1_cm0pq"]
+[ext_resource type="AudioStream" uid="uid://ghe8k2v3g7hn" path="res://ses/Platformer.wav" id="2_j4qnp"]
 [ext_resource type="PackedScene" uid="uid://j6sgwws7oiv3" path="res://blackjack.tscn" id="2_r0du0"]
 [ext_resource type="PackedScene" uid="uid://do2xywbrn17t2" path="res://slot_game.tscn" id="2_uu6xs"]
+[ext_resource type="AudioStream" uid="uid://cnvhv4682vh8f" path="res://BlackJack.wav" id="3_fpfj3"]
 [ext_resource type="Shader" uid="uid://345f5lgpiae2" path="res://TransitionGlitch.gdshader" id="4_fos0i"]
-[ext_resource type="Shader" uid="uid://xe6qtpk4qlug" path="res://TransitionLabel.gdshader" id="5_3dxm6"]
+[ext_resource type="AudioStream" uid="uid://dwlo8bw8nv11t" path="res://Slot.wav" id="4_sc1dx"]
+[ext_resource type="AudioStream" uid="uid://dpjlrd4pk6ql7" path="res://Car.wav" id="5_kjvhd"]
+[ext_resource type="AudioStream" uid="uid://pduhrno4qy0j" path="res://MUSIC/Koridor.wav" id="6_5tuhn"]
 [ext_resource type="FontFile" uid="uid://bmnfihoijqam7" path="res://Fonts/monogram-extended.ttf" id="6_lgr22"]
 [ext_resource type="PackedScene" uid="uid://42s157am6bll" path="res://harita.tscn" id="7_trn2v"]
 [ext_resource type="PackedScene" uid="uid://dcgyns6x4uq3e" path="res://gamemanager.tscn" id="8_03owx"]
 [ext_resource type="PackedScene" uid="uid://c00063pl40qrq" path="res://Cards/platformer_game.tscn" id="9_03owx"]
+[ext_resource type="Shader" uid="uid://cpr1idgdfad78" path="res://Glitchmat.tres" id="10_j4qnp"]
+[ext_resource type="Script" uid="uid://blx42tlj70qh6" path="res://DynamicAudioManager.cs" id="10_wkp8b"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3dxm6"]
 shader = ExtResource("4_fos0i")
@@ -16,13 +22,19 @@ shader_parameter/progress = 0.0
 shader_parameter/pixel_size = 16.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_trn2v"]
-shader = ExtResource("5_3dxm6")
+shader = ExtResource("10_j4qnp")
 shader_parameter/intensity = 0.005
 shader_parameter/speed = 15.0
 shader_parameter/frequency = 0.05
 
-[node name="Main" type="Node2D" unique_id=892963943 node_paths=PackedStringArray("PlatformScene", "BlackjackScene", "SlotScene", "ArabaScene", "KoridorScene", "TransitionRect", "TextBackground", "TransitionLabel")]
+[node name="Main" type="Node2D" unique_id=892963943 node_paths=PackedStringArray("BGMPlayer", "PlatformScene", "BlackjackScene", "SlotScene", "ArabaScene", "KoridorScene", "TransitionRect", "TextBackground", "TransitionLabel")]
 script = ExtResource("1_cm0pq")
+BGMPlayer = NodePath("BGMPlayer")
+PlatformMusic = ExtResource("2_j4qnp")
+BlackjackMusic = ExtResource("3_fpfj3")
+SlotsMusic = ExtResource("4_sc1dx")
+ArabaMusic = ExtResource("5_kjvhd")
+KoridorMusic = ExtResource("6_5tuhn")
 PlatformScene = NodePath("PlatformerGame")
 BlackjackScene = NodePath("BlackjackGame")
 SlotScene = NodePath("SlotGame")
@@ -63,16 +75,23 @@ material = SubResource("ShaderMaterial_trn2v")
 
 [node name="Label" type="Label" parent="TransitionLayer/CanvasGroup" unique_id=946862956]
 texture_filter = 1
-offset_left = 538.0
-offset_top = 298.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 472.0
+offset_top = 304.0
 offset_right = 670.0
-offset_bottom = 324.0
+offset_bottom = 342.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_colors/font_shadow_color = Color(0.96862745, 0.58431375, 1, 1)
 theme_override_constants/shadow_offset_x = 3
 theme_override_constants/shadow_offset_y = 3
 theme_override_constants/outline_size = 2
 theme_override_fonts/font = ExtResource("6_lgr22")
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 48
 text = "placeholder"
 
 [node name="harita" parent="." unique_id=520184946 instance=ExtResource("7_trn2v")]
@@ -80,3 +99,9 @@ text = "placeholder"
 [node name="PlatformerGame" parent="." unique_id=1219146549 instance=ExtResource("9_03owx")]
 
 [node name="gamemanager" parent="." unique_id=1748412387 instance=ExtResource("8_03owx")]
+
+[node name="DynamicAudioManager" type="Node" parent="." unique_id=600492158 node_paths=PackedStringArray("musicStems")]
+script = ExtResource("10_wkp8b")
+musicStems = []
+
+[node name="BGMPlayer" type="AudioStreamPlayer" parent="." unique_id=242526641]
