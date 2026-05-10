@@ -1,0 +1,57 @@
+[gd_scene format=3 uid="uid://c0nb6a60dj0cg"]
+
+[ext_resource type="Material" uid="uid://c28t6ib77goo5" path="res://Cards/GlitchMaterial.tres" id="1_l2arl"]
+[ext_resource type="Script" uid="uid://d344flaf0txqd" path="res://WinScreen.cs" id="1_l5t5q"]
+[ext_resource type="FontFile" uid="uid://bmnfihoijqam7" path="res://Fonts/monogram-extended.ttf" id="3_1txte"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_26557"]
+font_size = 149
+
+[node name="WinScreen" type="CanvasLayer" unique_id=206963919 node_paths=PackedStringArray("IsimYazisi")]
+script = ExtResource("1_l5t5q")
+IsimYazisi = NodePath("CanvasGroup/İsimYazisi")
+
+[node name="CanvasGroup" type="CanvasGroup" parent="." unique_id=631086707]
+material = ExtResource("1_l2arl")
+
+[node name="ColorRect" type="ColorRect" parent="CanvasGroup" unique_id=799047761]
+offset_right = 1150.0
+offset_bottom = 642.0
+color = Color(0, 0, 0, 1)
+
+[node name="Label" type="Label" parent="CanvasGroup" unique_id=1492546608]
+texture_filter = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 207.0
+offset_top = 76.0
+offset_right = 965.0
+offset_bottom = 357.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_shadow_color = Color(0.96862745, 0.58431375, 1, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/outline_size = 2
+theme_override_fonts/font = ExtResource("3_1txte")
+theme_override_font_sizes/font_size = 48
+text = "YOU WIN!!!"
+label_settings = SubResource("LabelSettings_26557")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="İsimYazisi" type="Label" parent="CanvasGroup" unique_id=730153273]
+texture_filter = 1
+offset_left = 447.0
+offset_top = 402.0
+offset_right = 645.0
+offset_bottom = 440.0
+theme_override_colors/font_shadow_color = Color(0.96862745, 0.58431375, 1, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/outline_size = 2
+theme_override_fonts/font = ExtResource("3_1txte")
+theme_override_font_sizes/font_size = 48
