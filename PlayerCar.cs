@@ -40,20 +40,35 @@ public partial class PlayerCar : CharacterBody2D
 		if (_oldu) return;
 
 		float yon = 0f;
-		if (Input.IsActionPressed("ui_left"))  yon = -1f;
-		if (Input.IsActionPressed("ui_right")) yon =  1f;
+		AudioStreamPlayer _car_lane_sfx = GetNode<AudioStreamPlayer>("car_lane_sfx");
+		if (Input.IsActionPressed("ui_left")) {
+			yon = -1f;
+		}  
+		
+		if (Input.IsActionPressed("ui_right")) {
+			yon =  1f;
+		} 
 
 		// =========================================================
 		// SİHİRLİ ANİMASYON KONTROL KISMI
 		// =========================================================
 		if (_animSprite != null)
 		{
-			if (yon == -1f)
+			
+				
+			if (yon == -1f){
 				_animSprite.Play("sol");   // Sola basılıyorsa "sol" animasyonunu oynat
-			else if (yon == 1f)
+				_car_lane_sfx.Play();
+				}
+			
+			else if (yon == 1f){
 				_animSprite.Play("sag");   // Sağa basılıyorsa "sag" animasyonunu oynat
-			else
+				_car_lane_sfx.Play();
+				}
+			else{
 				_animSprite.Play("duz");   // Hiçbir tuşa basılmıyorsa "duz" animasyona dön
+				_car_lane_sfx.Stop();
+				}
 		}
 
 		float yeniX = Position.X + yon * Hiz * (float)delta;

@@ -158,7 +158,9 @@ public partial class Blackjack : Control
 	private void UpdateVisualChips()
 	{
 		if (ChipStackAnchor == null || ChipTexture == null) return;
-
+		
+		
+		
 		int targetChips = _playerWallet / 100;
 		int currentChips = ChipStackAnchor.GetChildCount();
 
@@ -166,6 +168,8 @@ public partial class Blackjack : Control
 
 		if (targetChips > currentChips)
 		{
+			AudioStreamPlayer _chip_sfx = GetNode<AudioStreamPlayer>("chip_sfx");
+			_chip_sfx.Play();
 			int chipsToAdd = targetChips - currentChips;
 			for (int i = 0; i < chipsToAdd; i++)
 			{
@@ -218,12 +222,16 @@ public partial class Blackjack : Control
 			{
 				int cardId = startIdx + i;
 				int val = (i == 0) ? 11 : (i >= 1 && i <= 9) ? i + 1 : 10; 
-
+				
+				AudioStreamPlayer _card_sfx = GetNode<AudioStreamPlayer>("card_sfx");
+					_card_sfx.Play();
+				
 				_deck.Add(new PlayingCard 
 				{ 
 					ScoreValue = val, 
-					ImageName = $"{cardId.ToString("D2")}_kerenel_Cards.png" 
+					ImageName = $"{cardId.ToString("D2")}_kerenel_Cards.png"			 
 				});
+				
 			}
 		}
 	}
@@ -237,6 +245,9 @@ public partial class Blackjack : Control
 		PlayingCard drawnCard = _deck[index];
 		_deck.RemoveAt(index);
 		hand.Add(drawnCard);
+		
+		AudioStreamPlayer _card_sfx = GetNode<AudioStreamPlayer>("card_sfx");
+					_card_sfx.Play();
 
 		Control placeholder = new Control { CustomMinimumSize = new Vector2(80, 120) };
 
@@ -272,6 +283,7 @@ public partial class Blackjack : Control
 		PlayingCard drawnCard = _deck[index];
 		_deck.RemoveAt(index);
 		_dealerHand.Add(drawnCard); 
+		
 
 		Control placeholder = new Control { CustomMinimumSize = new Vector2(80, 120) };
 
@@ -345,7 +357,7 @@ public partial class Blackjack : Control
 	{
 		if (_activeHand == 1) DealCard(_hand1, Hand1UI);
 		else DealCard(_hand2, Hand2UI);
-
+		
 		UpdateScoresUI();
 		CheckActionButtons();
 	}

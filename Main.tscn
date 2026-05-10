@@ -1,13 +1,14 @@
 [gd_scene format=3 uid="uid://7apkl28ctpfw"]
 
 [ext_resource type="Script" uid="uid://0bkxp725ii43" path="res://Main.cs" id="1_cm0pq"]
-[ext_resource type="PackedScene" path="res://blackjack.tscn" id="2_r0du0"]
-[ext_resource type="PackedScene" path="res://slot_game.tscn" id="2_uu6xs"]
-[ext_resource type="Shader" path="res://TransitionGlitch.gdshader" id="4_fos0i"]
-[ext_resource type="Shader" path="res://TransitionLabel.gdshader" id="5_3dxm6"]
+[ext_resource type="PackedScene" uid="uid://j6sgwws7oiv3" path="res://blackjack.tscn" id="2_r0du0"]
+[ext_resource type="PackedScene" uid="uid://do2xywbrn17t2" path="res://slot_game.tscn" id="2_uu6xs"]
+[ext_resource type="Shader" uid="uid://345f5lgpiae2" path="res://TransitionGlitch.gdshader" id="4_fos0i"]
+[ext_resource type="Shader" uid="uid://xe6qtpk4qlug" path="res://TransitionLabel.gdshader" id="5_3dxm6"]
 [ext_resource type="FontFile" uid="uid://bmnfihoijqam7" path="res://Fonts/monogram-extended.ttf" id="6_lgr22"]
 [ext_resource type="PackedScene" uid="uid://42s157am6bll" path="res://harita.tscn" id="7_trn2v"]
 [ext_resource type="PackedScene" uid="uid://dcgyns6x4uq3e" path="res://gamemanager.tscn" id="8_03owx"]
+[ext_resource type="PackedScene" uid="uid://c00063pl40qrq" path="res://Cards/platformer_game.tscn" id="9_03owx"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3dxm6"]
 shader = ExtResource("4_fos0i")
@@ -20,8 +21,9 @@ shader_parameter/intensity = 0.005
 shader_parameter/speed = 15.0
 shader_parameter/frequency = 0.05
 
-[node name="Main" type="Node2D" unique_id=892963943 node_paths=PackedStringArray("BlackjackScene", "SlotScene", "ArabaScene", "KoridorScene", "TransitionRect", "TextBackground", "TransitionLabel")]
+[node name="Main" type="Node2D" unique_id=892963943 node_paths=PackedStringArray("PlatformScene", "BlackjackScene", "SlotScene", "ArabaScene", "KoridorScene", "TransitionRect", "TextBackground", "TransitionLabel")]
 script = ExtResource("1_cm0pq")
+PlatformScene = NodePath("PlatformerGame")
 BlackjackScene = NodePath("BlackjackGame")
 SlotScene = NodePath("SlotGame")
 ArabaScene = NodePath("gamemanager")
@@ -74,5 +76,7 @@ theme_override_font_sizes/font_size = 32
 text = "placeholder"
 
 [node name="harita" parent="." unique_id=520184946 instance=ExtResource("7_trn2v")]
+
+[node name="PlatformerGame" parent="." unique_id=1219146549 instance=ExtResource("9_03owx")]
 
 [node name="gamemanager" parent="." unique_id=1748412387 instance=ExtResource("8_03owx")]

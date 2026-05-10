@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://bk5laovitl6j4"]
+[gd_scene format=3 uid="uid://do2xywbrn17t2"]
 
 [ext_resource type="Script" uid="uid://0lj5r27dspxj" path="res://SlotGame.cs" id="1_6y2k4"]
 [ext_resource type="Texture2D" uid="uid://bx6hns3p2xtsl" path="res://Slot Machine/slot-machine2.png" id="2_p1dqe"]
@@ -10,6 +10,10 @@
 [ext_resource type="Texture2D" uid="uid://6vfba72it2pi" path="res://Slot Machine/slot-machine5.png" id="5_af41c"]
 [ext_resource type="Texture2D" uid="uid://cdsmxgobpue0a" path="res://Slot Machine/slot-symbol3.png" id="5_llnrq"]
 [ext_resource type="Texture2D" uid="uid://wpu6c8uceo35" path="res://coin_spin-Sheet.png" id="10_4efol"]
+[ext_resource type="AudioStream" uid="uid://e84evefrdho2" path="res://SlotKolCekme.wav" id="11_kh8ix"]
+[ext_resource type="AudioStream" uid="uid://dpmnryuxitsw2" path="res://Slot Win.wav" id="12_2yffs"]
+[ext_resource type="AudioStream" uid="uid://dwlo8bw8nv11t" path="res://Slot.wav" id="14_kh8ix"]
+[ext_resource type="AudioStream" uid="uid://cmguy44jc5ek1" path="res://SlotDonme.wav" id="14_rshla"]
 
 [sub_resource type="Gradient" id="Gradient_pccns"]
 colors = PackedColorArray(0.2901961, 0.05490196, 0.09019608, 1, 0, 0.05490196, 0.09019608, 1)
@@ -108,14 +112,6 @@ offset_bottom = 653.0
 texture_normal = ExtResource("2_p1dqe")
 texture_pressed = ExtResource("3_ofl6k")
 
-[node name="SpinSound" type="AudioStreamPlayer2D" parent="." unique_id=808868799]
-position = Vector2(0, 1)
-
-[node name="StopSound" type="AudioStreamPlayer2D" parent="." unique_id=737977125]
-position = Vector2(0, 1)
-
-[node name="WinSound" type="AudioStreamPlayer2D" parent="." unique_id=1434613872]
-
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1545338878]
 position = Vector2(-1, 0)
 anchor_mode = 0
@@ -130,5 +126,19 @@ lifetime = 2.0
 one_shot = true
 explosiveness = 0.95
 process_material = SubResource("ParticleProcessMaterial_pccns")
+
+[node name="lever_sfx" type="AudioStreamPlayer" parent="." unique_id=418288161]
+stream = ExtResource("11_kh8ix")
+
+[node name="win_sfx" type="AudioStreamPlayer" parent="." unique_id=20553898]
+stream = ExtResource("12_2yffs")
+
+[node name="spin_sfx" type="AudioStreamPlayer" parent="." unique_id=1188769603]
+stream = ExtResource("14_rshla")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=1138811827]
+stream = ExtResource("14_kh8ix")
+volume_db = -2.0
+autoplay = true
 
 [connection signal="pressed" from="Lever" to="." method="OnLeverPulled"]

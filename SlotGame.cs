@@ -99,14 +99,14 @@ public partial class SlotGame : Control
 	public async void OnLeverPulled()
 	{
 		if (_isExiting) return;
-
+		AudioStreamPlayer _lever_sfx = GetNode<AudioStreamPlayer>("lever_sfx");
+			_lever_sfx.Play();
+		
 		LeverButton.Disabled = true; 
 		if (GoToBlackjackBtn != null) GoToBlackjackBtn.Disabled = true; // Don't let them leave while spinning!
 		
 		foreach (var slot in _gridSlots) slot.Modulate = Colors.White;
-
-		if (SpinSFX != null) SpinSFX.Play();
-
+	
 		for (int i = 0; i < 12; i++)
 		{
 			RandomizeBoard();
@@ -126,6 +126,8 @@ public partial class SlotGame : Control
 
 	private Texture2D[] RandomizeBoard()
 	{
+		AudioStreamPlayer _spin_sfx = GetNode<AudioStreamPlayer>("spin_sfx");
+			_spin_sfx.Play();
 		Texture2D[] currentBoard = new Texture2D[GridSize];
 		for (int i = 0; i < _gridSlots.Count; i++)
 		{
@@ -152,7 +154,8 @@ public partial class SlotGame : Control
 
 		if (totalWin > 0)
 		{
-			if (WinSFX != null) WinSFX.Play();
+			AudioStreamPlayer _win_sfx = GetNode<AudioStreamPlayer>("win_sfx");
+				_win_sfx.Play();
 			TriggerJackpotVisuals(); 
 		}
 	}

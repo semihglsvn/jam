@@ -2,6 +2,7 @@ using Godot;
 
 public partial class Main : Node2D 
 {
+	[Export] public Node PlatformScene; 
 	[Export] public Node BlackjackScene; 
 	[Export] public Node SlotScene;
 	[Export] public Node ArabaScene;
@@ -15,12 +16,13 @@ public partial class Main : Node2D
 	private Timer _autoSwitchTimer;
 	private bool _isTransitioning = false; 
 
-	private string[] _oyunListesi = { "Blackjack", "Slots", "Araba", "Koridor" };
-	private string _aktifOyun = "Blackjack";
+	private string[] _minioyunListesi = { "Blackjack", "Slots", "Araba", "Koridor" };
+	private string _aktifOyun = "Platform"; 
 
 	public override void _Ready()
 	{
-		OyunDurumunuAyarla(BlackjackScene, true, true);
+		OyunDurumunuAyarla(PlatformScene, true, true);
+		OyunDurumunuAyarla(BlackjackScene, false, false);
 		OyunDurumunuAyarla(SlotScene, false, false);
 		OyunDurumunuAyarla(ArabaScene, false, false);
 		OyunDurumunuAyarla(KoridorScene, false, false);
@@ -37,53 +39,71 @@ public partial class Main : Node2D
 		AddChild(_autoSwitchTimer); 
 
 		StartNextRandomTimer();
+
+		// OYUN BAŞLADIĞINDA PLATFORMUN KAMERASINI AKTİF ET
+		AktifKamerayiBulVeAyarla(PlatformScene);
 	}
 
-	// YENİ: Görünürlük (Visible) ve Çalışma durumunu (ProcessMode) ayırdık!
 	private void OyunDurumunuAyarla(Node oyunDugumu, bool gorunurMu, bool calissinMi)
 	{
 		if (oyunDugumu == null) return;
 		
-		GorunurlukAyarlaRecursive(oyunDugumu, gorunurMu);
-		oyunDugumu.ProcessMode = calissinMi ? ProcessModeEnum.Inherit : ProcessModeEnum.Disabled;
-	}
-
-	private void GorunurlukAyarlaRecursive(Node dugum, bool gorunurMu)
-	{
-		if (dugum is CanvasItem canvasItem) 
+		if (oyunDugumu is CanvasItem canvasItem) 
 		{
 			canvasItem.Visible = gorunurMu;
 		}
-		else if (dugum is Node3D node3d) 
+		else if (oyunDugumu is Node3D node3d) 
 		{
 			node3d.Visible = gorunurMu;
 		}
 		else
 		{
-			foreach (Node cocuk in dugum.GetChildren())
+			foreach (Node cocuk in oyunDugumu.GetChildren())
 			{
-				GorunurlukAyarlaRecursive(cocuk, gorunurMu);
+				if (cocuk is CanvasItem c) c.Visible = gorunurMu;
+				else if (cocuk is Node3D n) n.Visible = gorunurMu;
 			}
+		}
+
+		oyunDugumu.ProcessMode = calissinMi ? ProcessModeEnum.Inherit : ProcessModeEnum.Disabled;
+	}
+
+	// YENİ EKLENEN SİHİRLİ FONKSİYON: Sahnedeki kamerayı bulup ona odaklanır
+	private void AktifKamerayiBulVeAyarla(Node dugum)
+	{
+		if (dugum == null) return;
+
+		// Eğer aradığımız düğüm bir kameraysa, onu ana kamera yap
+		if (dugum is Camera2D cam2D)
+		{
+			cam2D.MakeCurrent();
+			return;
+		}
+
+		// Değilse altındaki çocuk düğümleri kontrol et
+		foreach (Node cocuk in dugum.GetChildren())
+		{
+			AktifKamerayiBulVeAyarla(cocuk);
 		}
 	}
 
 	private void StartNextRandomTimer()
 	{
-		float randomTime = _rng.RandfRange(15.0f, 35.0f);
-		_autoSwitchTimer.Start(randomTime);
+		if (_aktifOyun == "Platform")
+		{
+			float randomTime = _rng.RandfRange(15.0f, 35.0f);
+			_autoSwitchTimer.Start(randomTime);
+		}
 	}
 
 	private void OnAutoSwitchTimeout()
 	{
-		if (_isTransitioning) return;
+		if (_isTransitioning || _aktifOyun != "Platform") return;
 
-		string yeniOyun;
-		do {
-			yeniOyun = _oyunListesi[_rng.RandiRange(0, _oyunListesi.Length - 1)];
-		} while (yeniOyun == _aktifOyun);
+		string yeniOyun = _minioyunListesi[_rng.RandiRange(0, _minioyunListesi.Length - 1)];
 
 		string mesaj = "";
-		if (yeniOyun == "Blackjack") mesaj = "MASAYA GERİ DÖN...";
+		if (yeniOyun == "Blackjack") mesaj = "MASAYA OTUR...";
 		else if (yeniOyun == "Slots") mesaj = "ŞANSINI DENE...";
 		else if (yeniOyun == "Araba") mesaj = "KAÇAMAZSIN... SÜR!";
 		else if (yeniOyun == "Koridor") mesaj = "YÜRÜ... SADECE YÜRÜ.";
@@ -91,18 +111,22 @@ public partial class Main : Node2D
 		SwitchGame(yeniOyun, mesaj);
 	}
 
+	public void MinioyunKazanildi()
+	{
+		if (_isTransitioning || _aktifOyun == "Platform") return;
+		SwitchGame("Platform", "GERİ DÖNDÜN...");
+	}
+
 	public void SwitchGame(string targetGame, string message)
 	{
 		if (_isTransitioning) return;
 		_isTransitioning = true;
 
-		if (_autoSwitchTimer != null) StartNextRandomTimer();
 		if (TransitionLabel != null) TransitionLabel.Text = message;
 		
 		Tween tween = GetTree().CreateTween();
 		ShaderMaterial mat = TransitionRect != null ? TransitionRect.Material as ShaderMaterial : null;
 
-		// --- SİHİRLİ DOKUNUŞ 1: Geçiş başladığı salise şu anki oyunu DONDUR ---
 		Node aktifDugum = GetOyunDugumu(_aktifOyun);
 		if (aktifDugum != null) aktifDugum.ProcessMode = ProcessModeEnum.Disabled;
 
@@ -118,6 +142,7 @@ public partial class Main : Node2D
 		tween.TweenInterval(2.5f);
 		tween.TweenCallback(Callable.From(() =>
 		{
+			OyunDurumunuAyarla(PlatformScene, false, false);
 			OyunDurumunuAyarla(BlackjackScene, false, false);
 			OyunDurumunuAyarla(SlotScene, false, false);
 			OyunDurumunuAyarla(ArabaScene, false, false);
@@ -125,9 +150,8 @@ public partial class Main : Node2D
 
 			_aktifOyun = targetGame;
 
-			// --- SİHİRLİ DOKUNUŞ 2: Yeni oyunu GÖRÜNÜR yap ama BAŞLATMA (Hala donuk) ---
 			Node yeniDugum = GetOyunDugumu(targetGame);
-			if (yeniDugum != null) GorunurlukAyarlaRecursive(yeniDugum, true);
+			if (yeniDugum != null) OyunDurumunuAyarla(yeniDugum, true, false); 
 		}));
 
 		if (TextBackground != null) tween.TweenProperty(TextBackground, "modulate:a", 0.0f, 0.4f);
@@ -139,19 +163,29 @@ public partial class Main : Node2D
 				 .SetTrans(Tween.TransitionType.Cubic).SetEase(Tween.EaseType.InOut);
 		}
 
-		// --- SİHİRLİ DOKUNUŞ 3: Glitch tamamen bitip ekran aydınlanınca zamanı AKIT ---
 		tween.TweenCallback(Callable.From(() => 
 		{ 
 			Node yeniDugum = GetOyunDugumu(targetGame);
-			if (yeniDugum != null) yeniDugum.ProcessMode = ProcessModeEnum.Inherit;
+			if (yeniDugum != null) 
+			{
+				yeniDugum.ProcessMode = ProcessModeEnum.Inherit;
+				
+				// YENİ EKLENEN KISIM: Geçiş bitince o oyunun kamerasını ele al!
+				AktifKamerayiBulVeAyarla(yeniDugum);
+			}
 			
 			_isTransitioning = false; 
+
+			if (_aktifOyun == "Platform")
+			{
+				StartNextRandomTimer();
+			}
 		}));
 	}
 
-	// İsimden düğümü bulan yardımcı kod
 	private Node GetOyunDugumu(string isim)
 	{
+		if (isim == "Platform") return PlatformScene;
 		if (isim == "Blackjack") return BlackjackScene;
 		if (isim == "Slots") return SlotScene;
 		if (isim == "Araba") return ArabaScene;
