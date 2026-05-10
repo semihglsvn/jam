@@ -5,7 +5,6 @@
 [ext_resource type="Script" uid="uid://dn0q6gmpsnpf4" path="res://RhythmManager.cs" id="3_3cf2b"]
 [ext_resource type="PackedScene" uid="uid://ccnhharesqfqn" path="res://Cards/player.tscn" id="3_wdf2e"]
 [ext_resource type="Texture2D" uid="uid://ixnm4ps5j74v" path="res://platform/tilemap_packed.png" id="4_cnh48"]
-[ext_resource type="AudioStream" uid="uid://ghe8k2v3g7hn" path="res://ses/Platformer.wav" id="6_cnh48"]
 [ext_resource type="AudioStream" uid="uid://8hybskh31ll0" path="res://ses/Dash.wav" id="6_l8cwg"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_l8cwg"]
@@ -910,9 +909,3 @@ position_smoothing_enabled = true
 
 [node name="sfxjump" type="AudioStreamPlayer" parent="Player" unique_id=14967965]
 stream = ExtResource("6_l8cwg")
-
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=671119702]
-stream = ExtResource("6_cnh48")
-volume_db = -8.0
-autoplay = true
-playback_type = 1

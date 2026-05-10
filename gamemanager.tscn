@@ -10,7 +10,6 @@
 [ext_resource type="Script" uid="uid://d3qr52d7ix3nu" path="res://LinesScroller.cs" id="7_3f68o"]
 [ext_resource type="Texture2D" uid="uid://7ok5tdqu2ajx" path="res://sky_night.png" id="7_tw36h"]
 [ext_resource type="AudioStream" uid="uid://bjj7ltarq6qg2" path="res://CarLaneSwitch2.wav" id="8_j5sry"]
-[ext_resource type="AudioStream" uid="uid://dpjlrd4pk6ql7" path="res://Car.wav" id="11_kox3n"]
 [ext_resource type="AudioStream" uid="uid://chh2eab77p276" path="res://CarConstant.wav" id="12_xwp2g"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ymq0e"]
@@ -126,11 +125,6 @@ autostart = true
 [node name="proptimer" type="Timer" parent="." unique_id=1837125248]
 wait_time = 0.8
 autostart = true
-
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=1172202002]
-stream = ExtResource("11_kox3n")
-volume_db = -1.0
-autoplay = true
 
 [node name="car_constant_sfx" type="AudioStreamPlayer" parent="." unique_id=561088702]
 stream = ExtResource("12_xwp2g")
