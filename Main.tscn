@@ -14,7 +14,6 @@
 [ext_resource type="PackedScene" uid="uid://dcgyns6x4uq3e" path="res://gamemanager.tscn" id="8_03owx"]
 [ext_resource type="PackedScene" uid="uid://c00063pl40qrq" path="res://Cards/platformer_game.tscn" id="9_03owx"]
 [ext_resource type="Shader" uid="uid://cpr1idgdfad78" path="res://Glitchmat.tres" id="10_j4qnp"]
-[ext_resource type="Script" uid="uid://blx42tlj70qh6" path="res://DynamicAudioManager.cs" id="10_wkp8b"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3dxm6"]
 shader = ExtResource("4_fos0i")
@@ -99,9 +98,5 @@ text = "placeholder"
 [node name="PlatformerGame" parent="." unique_id=1219146549 instance=ExtResource("9_03owx")]
 
 [node name="gamemanager" parent="." unique_id=1748412387 instance=ExtResource("8_03owx")]
-
-[node name="DynamicAudioManager" type="Node" parent="." unique_id=600492158 node_paths=PackedStringArray("musicStems")]
-script = ExtResource("10_wkp8b")
-musicStems = []
 
 [node name="BGMPlayer" type="AudioStreamPlayer" parent="." unique_id=242526641]

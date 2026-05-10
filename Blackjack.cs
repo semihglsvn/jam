@@ -61,7 +61,6 @@ public partial class Blackjack : Control
 		StandBtn.Pressed += OnStandPressed;
 		DoubleBtn.Pressed += OnDoubleDownPressed;
 		SplitBtn.Pressed += OnSplitPressed;
-		if (GoToSlotsBtn != null) GoToSlotsBtn.Pressed += OnGoToSlotsPressed;
 
 		// <--- NEW: Force the CanvasLayer to turn invisible when Main.cs tells the game to hide! --->
 		this.VisibilityChanged += () =>
@@ -86,21 +85,6 @@ public partial class Blackjack : Control
 	}
 
 	// <--- NEW: The Transition Method
-	private void OnGoToSlotsPressed()
-	{
-		// Use the absolute path to find Main
-		Main mainScene = GetNodeOrNull<Main>("/root/Main"); 
-		
-		if (mainScene != null)
-		{
-			mainScene.SwitchGame("Slots", "LADY LUCK IS WAITING...");
-		}
-		else
-		{
-			GD.PrintErr("CRITICAL: Could not find the Main node at /root/Main!");
-		}
-	}
-
 	private async void StartNewRound()
 	{
 		if (_playerWallet < _currentBet)
